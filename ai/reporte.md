@@ -5,7 +5,7 @@
 
 **Tarea:** T-01 · Actualizar dependencias por seguridad
 **Rama:** `00-dependencias`
-**Pull Request:** _(se agrega en el siguiente commit, después de abrirlo)_
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/2 (hacia `develop`)
 **Estado:** Completada
 **Fecha:** 2026-11-15
 
