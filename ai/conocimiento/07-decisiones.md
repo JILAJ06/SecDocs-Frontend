@@ -15,3 +15,5 @@ Respuestas de Claude Chat a las dudas del reporte T-00 y otras decisiones del pr
 | Estados de `StatusBadge` | Se amplían a los de la v2 en la rama de componentes base. |
 | `push` | Se usa `git push -u origin <rama>` (la regla de `03` queda corregida). |
 | Next.js | Se sube a Next 15.5.21 o superior (con React 19) por avisos de seguridad en las *rewrites* (ver `siguiente.md` de la rama `00-dependencias`). |
+| `postcss` interno de Next | No se agrega `overrides` para el `postcss` 8.4.31 que trae Next. Riesgo aceptado (solo en tiempo de compilación); se revisa cuando salga una 15.5.x con postcss actualizado. |
+| `docker build` | Se verifica en una tarea final, junto con `docker-compose`. |
