@@ -1,23 +1,25 @@
-# 04 · Vistas que ya existen (se ajustan al Figma, no se rehacen)
+# 04 · Vistas: lo que ya existe (v1) y cómo se construye la v2
 
-Decisión tomada: **se conserva la lógica y la conexión con la API**; solo cambia la interfaz para que coincida con el Figma.
+## Estrategia de la v2: maquetado con datos de ejemplo
+- Las pantallas nuevas **no llaman a la API real**. Leen de una capa de servicios con datos simulados:
+  - `lib/mock/`: datos de ejemplo (bóvedas, archivos, miembros, bitácora, sesiones…). Usa los textos del Figma (por ejemplo "Auditoría Financiera", `auditor@empresa.com`).
+  - `lib/services/`: funciones asíncronas (`listVaults()`, `getVault(id)`, `inviteMember(...)`…) que hoy devuelven datos de `lib/mock/`. Más adelante se reemplazan por llamadas a `/api/*` sin tocar las pantallas.
+- El estado de sesión simulado vive en memoria (contexto de React). **No** uses `localStorage`/`sessionStorage` ni cookies inventadas.
+- Todo dato falso debe verse como falso en el código (carpeta `mock`); nunca pongas contraseñas o llaves reales de ejemplo.
+- El mapa de pantallas, rutas y IDs de Figma está en `05-figma.md`.
 
-| Ruta | Archivo | Qué hace | Llamadas a la API |
-|---|---|---|---|
-| `/` | `app/page.jsx` | Redirige a `/dashboard` | — |
-| `/login` | `app/login/page.jsx` + `components/AuthForm.jsx` (`mode="login"`) | Inicio de sesión | vía `AuthForm` |
-| `/register` | `app/register/page.jsx` + `components/AuthForm.jsx` (`mode="register"`) | Registro | vía `AuthForm` |
-| `/dashboard` | `app/dashboard/page.jsx` (envuelta en `Shell`) | Bóveda: subir archivos, listarlos, crear/revocar enlaces por receptor, borrar | `GET /files`, `POST /files`, `DELETE /files/:id`, `GET /files/:id/links`, `POST /files/:id/links`, `POST /links/:id/revoke` |
-| `/audit` | `app/audit/page.jsx` (envuelta en `Shell`) | Bitácora de auditoría | `GET /audit` |
-| `/s/[token]` | `app/s/[token]/page.jsx` | Vista pública del receptor: mete la clave y descarga | `GET /public/links/:token`, `POST /public/links/:token/verify` |
+## Código v1 que ya existe (se conserva hasta nuevo aviso)
+| Ruta | Archivo | Qué hace |
+|---|---|---|
+| `/` | `app/page.jsx` | Redirige a `/dashboard` |
+| `/login`, `/register` | `app/login`, `app/register` + `components/AuthForm.jsx` | Sesión (v1, contra la API real) |
+| `/dashboard` | `app/dashboard/page.jsx` | Bóveda v1: archivos y enlaces por receptor |
+| `/audit` | `app/audit/page.jsx` | Bitácora v1 |
+| `/s/[token]` | `app/s/[token]/page.jsx` | Receptor v1 con enlace y clave |
 
-## Componentes compartidos
-- `components/Shell.jsx`: marco de las pantallas con sesión (navegación, cierre de sesión). Llama `GET /auth/me` y `POST /auth/logout`.
-- `components/AuthForm.jsx`: formulario de login/registro según `mode`.
-- `components/ui.jsx`: `Brand`, `StatusBadge`, `CopyField`, `Alert`.
-- `lib/api.js`: cliente axios y utilidades (`errorMessage`, `errorData`, `formatBytes`, `formatDate`, `timeLeft`, `generatePassword`).
+Componentes compartidos: `Shell.jsx` (marco con sesión v1), `AuthForm.jsx`, `ui.jsx` (`Brand`, `StatusBadge`, `CopyField`, `Alert`) y `lib/api.js` (cliente axios y utilidades).
 
-## Estados que la interfaz debe seguir cubriendo
-Cada vista del Figma debe verse bien (o Claude Chat te dirá qué falta) en: cargando, vacío, error, y los estados de enlace (`ACTIVE`, `CONSUMED`, `EXPIRED`, `REVOKED`, `LOCKED`). El receptor ve "te quedan N intentos", retardo progresivo y "Enlace no disponible".
+**Conflictos de ruta v1 ↔ v2:** `/login`, `/register` y `/audit` existen en ambas. Cuando una tarea diga que una pantalla v2 reemplaza a la v1, se sustituye en el mismo archivo; no se duplican rutas. `/dashboard` y `/s/[token]` son solo v1 y se retirarán cuando Claude Chat lo indique.
 
-> Si una pantalla del Figma no tiene equivalente en esta tabla (vista nueva), `siguiente.md` lo indicará explícitamente.
+## Estados que cada pantalla debe cubrir
+Cargando, vacío, error, y los estados de bóveda (Activa, Bloqueada, Expirada), de miembro/invitación (Pendiente, Aceptada, Bloqueo temporal, Bloqueado) y de archivo (Activo, Destruido). `siguiente.md` dirá cuáles aplican a cada vista.

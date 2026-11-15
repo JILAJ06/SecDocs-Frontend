@@ -27,5 +27,10 @@ Despliegue futuro: Vercel (frontend), Railway (API) y Supabase (base de datos).
 
 Los colores de alerta (`danger`, `warning`, `info`, `success`) se conservan en `tailwind.config.js` porque la paleta no trae rojo ni ámbar. Tipografías: Inter (texto) y JetBrains Mono (llaves, enlaces, datos técnicos).
 
+## Versión 1 y versión 2 (decisión tomada)
+El código que ya está en los 3 repos es la **v1** (archivos con un enlace anónimo por receptor). El Figma describe la **v2**: bóvedas (workspaces) con KEK propia, miembros, invitaciones amarradas a un correo, contraseña de bóveda enviada por correo (canal 2) y sesiones con kill-switch.
+
+**Decisión:** el frontend se **maqueta con la v2 usando datos de ejemplo** (sin llamar a la API real). El backend y la base de datos pasarán a la v2 más adelante; por ahora **no se tocan**. El código v1 del frontend se conserva hasta que Claude Chat indique retirarlo.
+
 ## Diseño
 El diseño está en Figma, archivo **SecDocs-Maquetado**. Claude Chat lee el Figma y traduce cada vista a medidas, colores, textos y estructura dentro de `ai/siguiente.md`. Si algo del Figma no está claro, **pregunta en `ai/reporte.md`**, no lo inventes.
