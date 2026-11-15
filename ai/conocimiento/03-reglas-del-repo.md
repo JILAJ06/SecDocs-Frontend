@@ -4,6 +4,9 @@
 - Mensaje **sin prefijo** (nada de `feat:`, `fix:`, `chore:`): solo una frase en español que diga qué se hizo.
   - Bien: `Ajusta el panel de archivos al diseño de Figma`
   - Mal: `feat: ajusta panel`
+- **Sin autoría de Claude:** los commits no deben llevar ninguna línea que mencione a Claude. Nada de `Co-Authored-By: Claude ...`, `Generated with Claude Code`, `Claude-Session:` ni similares. El autor es solo el usuario (su configuración de git). Claude no puede aparecer como colaborador en GitHub.
+  - Este repo ya trae `.claude/settings.json` que desactiva esas líneas, pero **revisa tú el mensaje** antes de hacer commit (`git log -1 --format=%B`) y, si aparece alguna, corrígela con `git commit --amend` antes de subir.
+  - Aplica también a descripciones de pull requests, si llegara a haber alguna.
 - Commits pequeños y graduales, uno por cambio con sentido (una vista, un componente). No un commit gigante.
 - Rama: `main`. Antes de empezar: `git pull --rebase origin main`. Al terminar: `git push origin main`.
 - Nunca subir `.env`, `node_modules`, `.next` ni secretos.
