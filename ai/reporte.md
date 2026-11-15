@@ -4,6 +4,8 @@
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
 **Tarea:** _(ID de la tarea de `siguiente.md`, por ejemplo T-01)_
+**Rama:** _(por ejemplo 01-iniciar-sesion)_
+**Pull Request:** _(enlace, o "no se pudo abrir" + título y descripción para pegar en GitHub)_
 **Estado:** _(Completada | Parcial | Bloqueada)_
 **Fecha:** _(AAAA-MM-DD)_
 

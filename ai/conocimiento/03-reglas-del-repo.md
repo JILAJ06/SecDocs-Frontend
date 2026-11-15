@@ -8,7 +8,8 @@
   - Este repo ya trae `.claude/settings.json` que desactiva esas líneas, pero **revisa tú el mensaje** antes de hacer commit (`git log -1 --format=%B`) y, si aparece alguna, corrígela con `git commit --amend` antes de subir.
   - Aplica también a descripciones de pull requests, si llegara a haber alguna.
 - Commits pequeños y graduales, uno por cambio con sentido (una vista, un componente). No un commit gigante.
-- Rama: `main`. Antes de empezar: `git pull --rebase origin main`. Al terminar: `git push origin main`.
+- Ramas: trabajas **solo** en la rama de la tarea (ver `06-ramas-y-pull-requests.md`). Nunca hagas commit ni push directo a `main` o `develop`, y nunca hagas merge: lo hace el usuario tras la revisión.
+- Antes de empezar: `git fetch origin`, `git checkout <rama>`, `git pull`. Al terminar: `git push origin <rama>` y abrir el Pull Request hacia `develop`.
 - Nunca subir `.env`, `node_modules`, `.next` ni secretos.
 
 ## Código

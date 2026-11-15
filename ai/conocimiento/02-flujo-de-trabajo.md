@@ -13,13 +13,13 @@ Trabajan dos instancias de Claude y el usuario (Alexander) de intermediario:
 
 **Regla de oro:** cada archivo tiene un solo autor. Claude Code **nunca edita `siguiente.md`** y Claude Chat **nunca edita `reporte.md`**. Así no hay conflictos de git.
 
-## Ciclo de una tarea
-1. Claude Chat escribe `ai/siguiente.md` (con un ID, por ejemplo `T-01`) y lo sube a `main`.
-2. El usuario le dice a Claude Code: **"sigue con siguiente.md"**.
-3. Claude Code hace `git pull --rebase origin main`, lee `ai/siguiente.md` y las notas de `ai/conocimiento/`, trabaja la tarea.
-4. Al terminar, Claude Code **reescribe por completo `ai/reporte.md`** con el estado, lo que hizo y sus dudas (usa la plantilla que ya tiene el archivo). El reporte debe repetir el ID de la tarea; si el ID no coincide con el de `siguiente.md`, el reporte no corresponde.
-5. Claude Code sube todo a `main` (código y `ai/reporte.md`).
-6. El usuario le dice a Claude Chat: **"revisa, Claude Code ya terminó"**. Claude Chat hace `git pull`, lee el reporte, revisa el código contra el Figma, responde las dudas y escribe la siguiente tarea.
+## Ciclo de una tarea (detalle de ramas y Pull Requests en `06-ramas-y-pull-requests.md`)
+1. Claude Chat crea una rama de tarea desde `develop` (por ejemplo `01-iniciar-sesion`), escribe `ai/siguiente.md` **en esa rama** (con un ID como `T-01` y el nombre de la rama) y la sube.
+2. El usuario le dice a Claude Code: **"sigue con siguiente.md en la rama `<rama>`"**. Si no menciona la rama, Claude Code hace `git fetch origin` y usa la rama de tarea con el commit más reciente (que no sea `main` ni `develop`) y confirma en `siguiente.md` que el nombre coincide.
+3. Claude Code hace checkout de esa rama, `git pull`, lee `ai/siguiente.md` y las notas de `ai/conocimiento/` y trabaja la tarea con commits pequeños.
+4. Al terminar, Claude Code **reescribe por completo `ai/reporte.md`** con el estado, lo que hizo y sus dudas (plantilla ya en el archivo). El reporte repite el ID y la rama; si no coinciden con `siguiente.md`, no corresponde.
+5. Claude Code sube la rama y abre el Pull Request hacia `develop`.
+6. El usuario le dice a Claude Chat: **"revisa, Claude Code ya terminó"**. Claude Chat lee el reporte y el Pull Request, revisa el código contra el Figma, responde las dudas y, si hace falta, escribe un nuevo `siguiente.md` en la misma rama. Si todo está bien, el usuario hace el merge a `develop`.
 
 ## Dudas
 - Si una duda **bloquea** la tarea, Claude Code se detiene en lo que sí pudo hacer, lo reporta y no adivina.
