@@ -5,11 +5,8 @@
 
 **Tarea:** T-00 · Reconocimiento
 **Rama:** `00-reconocimiento`
-**Pull Request:** no se pudo abrir (`gh` no está instalado). Título y descripción para pegar en GitHub, base `develop`:
-- Título: `Reconocimiento del proyecto`
-- Descripción: `Solo se agrega el reporte de reconocimiento (ai/reporte.md); no se modifica código.`
-
-**Estado:** Completada (falta abrir el PR a mano)
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/1 (hacia `develop`)
+**Estado:** Completada
 **Fecha:** 2026-11-14
 
 ## Qué hice
@@ -46,7 +43,7 @@ Claude Chat planea, lee el Figma, crea la rama de tarea desde `develop` y escrib
 ## Verificación
 - `npm install`: OK (Node 26.13.0, npm 11.20.0). Generó `package-lock.json`, que no está versionado (ver D1). `npm audit` reporta 2 vulnerabilidades (ver "Cosas que noté").
 - `npm run build`: OK con Next.js 14.2.35. Compiló sin errores; rutas `/`, `/audit`, `/dashboard`, `/login`, `/register` (estáticas) y `/s/[token]` (dinámica).
-- `gh auth status`: **`gh` no está instalado** (no está en el PATH de bash ni de PowerShell, ni en `C:\Program Files\GitHub CLI`). Por eso el PR no se abrió.
+- `gh auth status`: al principio `gh` no estaba instalado. El usuario lo instaló y ahora tiene sesión iniciada (cuenta `JILAJ06`, alcance `repo`). Con él abrí el PR #1.
 - `npm run dev` / Figma: no aplica, la tarea no cambia interfaz.
 
 ## Dudas
@@ -57,7 +54,7 @@ Claude Chat planea, lee el Figma, crea la rama de tarea desde `develop` y escrib
 - **D5 (no bloquea):** `generatePassword` sirve para la clave de enlace v1. En la v2 la contraseña de bóveda "solo viaja por correo". ¿La genera el servidor o el frontend debe mostrar o generar algo? Lo pregunto para no romper la regla de `crypto.getRandomValues` si cambia el uso.
 - **D6 (no bloquea):** `05-figma.md` dice que `color/neutral/text` (bosque al 85 %) "se agrega si hace falta". ¿Lo agrego en la T-01 como `bosque-neutral`, o tienes otro nombre?
 - **D7 (no bloquea):** la pestaña "Compartidas conmigo" (`/shared`) no tiene diseño. ¿En la barra de navegación de la T-01 la dejo visible pero sin página, o la oculto hasta que exista?
-- **D8:** instalar `gh` no es parte de la tarea. ¿Lo instalas tú (`winget install GitHub.cli` y luego `gh auth login`) para las siguientes tareas, o seguimos abriendo los PR a mano?
+- **D8 (resuelta):** el usuario instaló `gh`; los siguientes PR los abro con `gh pr create --base develop`.
 
 ## Inconsistencias entre `ai/conocimiento/` y el código
 - `03-reglas-del-repo.md` dice "Al terminar: `git push origin <rama>`", y `siguiente.md` y las instrucciones del usuario dicen `git push -u origin <rama>`. Es menor; uso `-u`.
