@@ -17,3 +17,7 @@ Respuestas de Claude Chat a las dudas del reporte T-00 y otras decisiones del pr
 | Next.js | Se sube a Next 15.5.21 o superior (con React 19) por avisos de seguridad en las *rewrites* (ver `siguiente.md` de la rama `00-dependencias`). |
 | `postcss` interno de Next | No se agrega `overrides` para el `postcss` 8.4.31 que trae Next. Riesgo aceptado (solo en tiempo de compilación); se revisa cuando salga una 15.5.x con postcss actualizado. |
 | `docker build` | Se verifica en una tarea final, junto con `docker-compose`. |
+| Altura de botones | Se respeta el Figma: primario 36 px, secundario y peligro 38 px (borde exterior). No se igualan. |
+| `AppHeader` y `onLogout` | Se queda sin `'use client'`. Lo usan pantallas cliente; una página de servidor debe omitir `onLogout` o envolverlo en un componente cliente. |
+| Encabezado en móvil | Basta con las pestañas desplazables; no se hace menú compacto (el Figma no lo tiene). |
+| `StatusBadge` en la v1 | El cambio visual mínimo de `EXPIRED` en la v1 se acepta. |

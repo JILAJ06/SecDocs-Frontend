@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Code (nodos de código al terminar T-02)
+**Última actualización:** 2026-11-19 · Claude Chat (T-02 aprobada)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -45,7 +45,7 @@ graph LR
 |---|---|---|---|
 | T-00 | `00-reconocimiento` | hecho | PR #1 → D-04 |
 | T-01 | `00-dependencias` | hecho | PR #2 → X-next, X-react |
-| T-02 | `00-componentes-base` | en curso | → C-tw, C-ui, C-header |
+| T-02 | `00-componentes-base` | hecho | PR #3 → C-tw, C-ui, C-header |
 | T-03… | `01-iniciar-sesion`, `02-crear-cuenta`, `03-mis-bovedas`… | planeado | → S-01, S-02, S-03… y K-mock |
 
 ## Pantallas v2 (Figma, sección "04 · Pantallas")
@@ -102,3 +102,4 @@ graph LR
 |---|---|---|
 | 2026-11-19 | Claude Chat | Creación del grafo; T-00 y T-01 `hecho`, T-02 `en curso` |
 | 2026-11-19 | Claude Code | T-02: C-ui, C-tw y C-header pasan a `hecho` (C-header con ruta real `components/AppHeader.jsx`); C-css, C-layout sin cambios |
+| 2026-11-19 | Claude Chat | T-02 revisada y aprobada: pasa a `hecho` (PR #3) |
