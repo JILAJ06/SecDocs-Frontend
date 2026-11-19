@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Chat (T-02 aprobada)
+**Última actualización:** 2026-11-19 · Claude Chat (T-03 planeada)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -46,13 +46,14 @@ graph LR
 | T-00 | `00-reconocimiento` | hecho | PR #1 → D-04 |
 | T-01 | `00-dependencias` | hecho | PR #2 → X-next, X-react |
 | T-02 | `00-componentes-base` | hecho | PR #3 → C-tw, C-ui, C-header |
-| T-03… | `01-iniciar-sesion`, `02-crear-cuenta`, `03-mis-bovedas`… | planeado | → S-01, S-02, S-03… y K-mock |
+| T-03 | `01-autenticacion` | en curso | → S-01, S-02, C-session, C-services, K-mock |
+| T-04… | `02-mis-bovedas`… | planeado | → S-03… |
 
 ## Pantallas v2 (Figma, sección "04 · Pantallas")
 | ID | Pantalla | Ruta | Figma | Estado | Relaciones |
 |---|---|---|---|---|---|
-| S-01 | Iniciar sesión | `/login` | 6:23 | planeado | → reemplaza V1-login; → navega a S-03 |
-| S-02 | Crear cuenta | `/register` | 6:52 | planeado | → reemplaza V1-register |
+| S-01 | Iniciar sesión | `/login` | 6:23 | en curso | → reemplaza V1-login; → navega a S-03 |
+| S-02 | Crear cuenta | `/register` | 6:52 | en curso | → reemplaza V1-register |
 | S-03 | Mis bóvedas (+ modal 03b 29:644) | `/vaults` | 29:474 | planeado | → usa C-header; → navega a S-04 |
 | S-04 | Detalle de bóveda | `/vaults/[id]` | 29:835 | planeado | → usa C-header |
 | S-05/06/07 | Invitación | `/invitacion/[token]` | 30:877 / 30:911 / 30:964 | planeado | — |
@@ -90,7 +91,7 @@ graph LR
 ## Conceptos y externos
 | ID | Nombre | Estado | Notas |
 |---|---|---|---|
-| K-mock | Estrategia de datos de ejemplo | planeado | `lib/mock` + `lib/services`; sesión en memoria (D-07) |
+| K-mock | Estrategia de datos de ejemplo | en curso | `lib/mock` + `lib/services`; sesión en memoria (D-07) |
 | K-seg | Reglas de seguridad de la UI | hecho | `/api/*` mismo origen, CSRF, sin tokens en storage, CSP (D-03) |
 | X-figma | Figma "SecDocs-Maquetado" | hecho | fileKey `OxGANOgoxvenSJMpa97ZB6` |
 | X-next | Next.js ^15.5.29 | hecho | postcss interno aceptado (D-07) |
@@ -103,3 +104,4 @@ graph LR
 | 2026-11-19 | Claude Chat | Creación del grafo; T-00 y T-01 `hecho`, T-02 `en curso` |
 | 2026-11-19 | Claude Code | T-02: C-ui, C-tw y C-header pasan a `hecho` (C-header con ruta real `components/AppHeader.jsx`); C-css, C-layout sin cambios |
 | 2026-11-19 | Claude Chat | T-02 revisada y aprobada: pasa a `hecho` (PR #3) |
+| 2026-11-19 | Claude Chat | T-03 `en curso` (`01-autenticacion`): S-01, S-02 y K-mock `en curso`; tareas de pantallas renumeradas desde T-04 |

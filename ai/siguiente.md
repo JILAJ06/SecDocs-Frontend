@@ -1,104 +1,75 @@
-# Tarea T-02 · Tokens de diseño y componentes compartidos
+# Tarea T-03 · Iniciar sesión y Crear cuenta (con datos de ejemplo)
 
-**Rama:** `00-componentes-base` (creada desde `develop`)
+**Rama:** `01-autenticacion` (creada desde `develop`, que ya incluye T-02)
 **Pull Request:** hacia `develop` con `gh pr create --base develop`. **No hagas merge**: primero lo reviso yo (Claude Chat).
 
-Antes de empezar lee `ai/conocimiento/` completo (sobre todo `03`, `05` y `07`). Respuestas a tus dudas D1 y D2 de T-01: ver "Decisiones" al final.
+Antes de empezar: `git fetch origin`, `git checkout 01-autenticacion`, `git pull`; lee `ai/conocimiento/` (sobre todo `04`, `05`, `07`, `08`) y `ai/grafo.md`.
 
 ## Objetivo
-Dejar listos, sin pantallas todavía, los componentes que usarán todas las vistas v2. Medidas y colores ya vienen traducidos del Figma (página "Componentes"); no necesitas el conector.
+Dejar funcionando las pantallas **01 Iniciar sesión** (`/login`) y **02 Crear cuenta** (`/register`) de la v2, contra una capa de datos de ejemplo, e inaugurar la infraestructura que usarán todas las pantallas: `lib/mock`, `lib/services` y la sesión simulada en memoria. Las dos pantallas son casi idénticas, por eso van juntas y comparten componente.
 
 ## Alcance y archivos permitidos
-- `tailwind.config.js`
-- `components/ui.jsx` (se amplía; **los exports actuales siguen funcionando** porque la v1 los usa: `Brand`, `StatusBadge`, `CopyField`, `Alert`)
-- `components/AppHeader.jsx` (nuevo)
-- `app/layout.jsx` solo si hace falta para las fuentes (Inter y JetBrains Mono con `next/font`, variables `--font-inter` y `--font-mono`; si ya están, no lo toques)
-- `ai/conocimiento/07-decisiones.md`, `ai/reporte.md`
-- `ai/grafo.md` (solo los nodos de código; ver abajo)
-- Prohibido: pantallas nuevas, rutas, `lib/mock`, backend, dependencias nuevas.
+- `components/AuthForm.jsx` (se reescribe **en el mismo archivo**; sustituye a la v1)
+- `components/SessionProvider.jsx` (nuevo, cliente)
+- `lib/mock/users.js` (nuevo)
+- `lib/services/auth.js` (nuevo)
+- `app/layout.jsx` (solo para envolver con `SessionProvider`)
+- `app/login/page.jsx` y `app/register/page.jsx` solo si hace falta
+- `ai/grafo.md` (solo nodos de código), `ai/reporte.md`
+- Prohibido: backend, `lib/api.js` (se conserva para la v1), `globals.css`, dependencias nuevas, otras pantallas, `/` (sigue redirigiendo a `/dashboard`).
 
-## 1. Tokens (`tailwind.config.js`)
-- Agrega `./lib/**/*.{js,jsx}` a `content`.
-- Agrega `bosque.neutral: 'rgba(0, 65, 46, 0.85)'` (clase `text-bosque-neutral`, `border-bosque-neutral`).
-- Cambia el color de acento "Docs" a `salvia` (ya existe). Los demás colores (`success`, `danger`, `warning`, `info`) ya coinciden con el Figma; verifica los valores contra esta tarea y anota en el reporte cualquier diferencia.
-- Radios: Tailwind `rounded-lg` (8) para botones, campos y alertas; `rounded-full` para píldoras.
+## 1. Datos de ejemplo y servicios
+Regla: todo dato falso vive en `lib/mock/`; las pantallas **solo** hablan con `lib/services/`, nunca con `lib/mock/` ni con `lib/api.js`.
 
-## 2. Logo (`Brand`)
-- Ícono de candado SVG inline (el actual) usando `stroke="currentColor"` / `fill="currentColor"` y `className="text-bosque"`, **sin hex dentro del SVG**.
-- Variantes: `Brand` (grande: ícono 30 px, texto 24/32) y `Brand small` (chico: ícono 22 px, texto 18/28).
-- Texto: `Sec` en `text-bosque` + `Docs` en `text-salvia`, Inter Bold, `tracking` -0.5 px (`tracking-[-0.5px]`), separación entre ícono y texto 8 px (`gap-2`).
+`lib/mock/users.js`
+- Arreglo en memoria con usuarios de ejemplo: `{ id, email }`. Mínimo `alex@upchiapas.edu.mx` (dueño) y `auditor@empresa.com` (invitado, ya usado en el Figma).
+- Una constante exportada `DEMO_PASSWORD` con una contraseña **claramente falsa** de al menos 12 caracteres (por ejemplo `demo-maqueta-2026`), con un comentario que diga que es solo para la maqueta. Todos los usuarios de ejemplo usan esa contraseña. Es un dato de ejemplo, no un secreto: no la compares con nada real ni la imprimas en consola.
 
-## 3. Botón (`Button`, nuevo)
-Props: `variant` = `primary` | `secondary` | `danger` (por defecto `primary`), `type` (por defecto `button`), `disabled`, `className`, `children`, resto al `<button>`.
-Base: `px-4 py-2 rounded-lg text-sm leading-5 font-semibold` + foco visible (`focus-visible:outline` con salvia).
-- primary: `bg-bosque text-white hover:bg-bosque-hover`
-- secondary: `bg-white border border-salvia text-bosque-neutral hover:bg-niebla`
-- danger: `bg-white border border-danger-border text-danger-text hover:bg-danger-bg`
-- disabled: `opacity-50 cursor-not-allowed`
-Las clases `.btn-*` que ya existan en `globals.css` no se tocan (las usa la v1).
+`lib/services/auth.js` (funciones asíncronas; simulan 300–500 ms de espera con una promesa)
+- `login(email, password)` → devuelve `{ id, email }` si el correo existe (sin distinguir mayúsculas) y la contraseña es `DEMO_PASSWORD`; si no, lanza `Error('Correo o contraseña incorrectos')` (mismo mensaje en ambos casos; no reveles cuál falló).
+- `register(email, password)` → valida `password.length >= 12 && <= 72`; si el correo ya existe lanza `Error('Ya existe una cuenta con ese correo')`; si no, agrega el usuario al arreglo en memoria y lo devuelve. Para que el usuario nuevo pueda volver a entrar con la maqueta, guarda su contraseña en un mapa en memoria dentro de `lib/mock/users.js` y haz que `login` la acepte (o `DEMO_PASSWORD`). Documenta en un comentario cómo lo resolviste.
+- `logout()` → promesa vacía.
+- Cuando más adelante se conecte la API real, solo cambia el interior de estas funciones; **su firma no cambia**.
 
-## 4. Estado (`StatusBadge`)
-Píldora: `rounded-full border px-2 py-0.5 text-xs leading-4 font-semibold`. Mantén la API actual (`status`) y agrega los de la v2. Mapa completo:
+## 2. Sesión simulada (`components/SessionProvider.jsx`)
+- `'use client'`. Contexto de React con `session` (`null` o `{ id, email }`), `signIn(email, password)`, `signUp(email, password)`, `signOut()` y un hook `useSession()`.
+- La sesión vive **solo en memoria** (`useState`). Prohibido `localStorage`, `sessionStorage`, cookies y `window.name`. Recargar la página la pierde y es aceptable (ver `07-decisiones.md`).
+- `signIn`/`signUp` llaman a los servicios y guardan el usuario; los errores se **propagan** a quien llamó (la pantalla los muestra).
+- Envuelve `{children}` en `app/layout.jsx` con `<SessionProvider>` (el layout sigue siendo de servidor).
 
-| Clave | Etiqueta | Estilo |
-|---|---|---|
-| ACTIVE | Activo | success |
-| ACTIVE_F (o `ACTIVA`) | Activa | success |
-| ACCEPTED | Aceptada | success |
-| CONSUMED | Consumido | info |
-| PENDING | Pendiente | info |
-| EXPIRED | Expirado | niebla |
-| EXPIRED_F | Expirada | niebla |
-| PURGED | Destruido | niebla con texto `text-bosque-soft` |
-| REVOKED | Revocado | warning |
-| TEMP_LOCK | Bloqueo temporal | warning |
-| LOCKED | Bloqueado | danger |
-| LOCKED_F | Bloqueada | danger |
+## 3. Pantallas 01 y 02 (`components/AuthForm.jsx`, prop `mode="login" | "register"`)
+Usa los componentes de T-02 (`Brand`, `Field`, `Button`, `Alert`) en vez de las clases v1 (`.card`, `.input`, `.label`, `.btn-*`). Estructura y medidas (Figma 01 `6:23` y 02 `6:52`, ya traducidas):
 
-Estilos: success = `bg-success-bg border-success-border text-success-text`; info/warning/danger análogos con su trío; niebla = `bg-niebla border-salvia text-bosque-neutral`. Las claves femeninas puedes nombrarlas como prefieras, pero documenta la lista en el reporte.
-Usa `border` real (no `ring`).
+- **Fondo:** `bg-niebla` a pantalla completa (`min-h-screen`), contenido centrado vertical y horizontalmente, `px-4`.
+- **Columna:** `w-full max-w-sm` (384 px), `flex flex-col gap-6`.
+- **Marca (arriba de la tarjeta):** centrada, `gap-2`: `Brand` grande y debajo el texto **"Bóveda con cifrado en reposo y enlaces que se autodestruyen"** (14/20, `text-bosque-soft`, `text-center`). En el Figma esa frase no cabe en 384 px y se corta; **permite que se parta en dos líneas** (no uses `whitespace-nowrap`).
+- **Tarjeta:** `bg-white border border-niebla rounded-2xl` (radio 16) `p-5` (20), `flex flex-col gap-4`.
+  - Título: `Iniciar sesión` / `Crear cuenta` en `<h1>`, `text-lg leading-7 font-semibold text-bosque` (18/28).
+  - `Field` **Correo** (`type="email"`, `autoComplete="email"`, `required`) y `Field` **Contraseña** (`type="password"`, `required`, `maxLength={72}`; en login `autoComplete="current-password"`, en registro `autoComplete="new-password"`). Las etiquetas salen en mayúsculas por el propio `Field`.
+  - Solo en **registro**, debajo de la contraseña: **"Mínimo 12 caracteres. Se guarda con bcrypt (costo 12)."** (12/16, `text-bosque-muted`) y `minLength={12}` en el campo.
+  - Solo en **login**, si hay error: `Alert` de error con el mensaje (en el Figma: "Correo o contraseña incorrectos"). En **registro** el error se muestra con el mismo `Alert`, en el mismo lugar (justo antes del botón), aunque el Figma no lo dibuje.
+  - Botón primario `w-full`: **"Entrar"** / **"Registrarme"**; mientras espera muestra **"Procesando…"** y queda deshabilitado.
+  - Pie centrado, `gap-1`, 14/20: texto `text-bosque-soft` **"¿No tienes cuenta?"** / **"¿Ya tienes cuenta?"** seguido del enlace (`next/link`) **"Regístrate"** (`/register`) / **"Inicia sesión"** (`/login`) en `font-medium text-bosque underline` (con `underline-offset-2`).
+- Al enviar: `preventDefault`, limpia el error, llama a `signIn` / `signUp` del contexto; si sale bien, `router.replace('/vaults')`; si falla, muestra `err.message` en el `Alert`. (`/vaults` todavía no existe y dará 404 hasta la siguiente tarea: es esperado.)
+- Si ya hay sesión y alguien entra a `/login` o `/register`, redirige a `/vaults` (con `useEffect`).
+- Accesibilidad: el mensaje de error debe anunciarse (`role="alert"` en el contenedor del `Alert` o equivalente); no cambies el componente `Alert` si no hace falta, envuélvelo.
 
-## 5. Campo (`Field` y `Select`, nuevos)
-`Field` props: `label`, `id`, `mono` (bool), `type`, y el resto al `<input>`. Estructura: columna con `gap-1` (4 px).
-- Etiqueta: `text-xs leading-4 font-medium uppercase tracking-[0.6px] text-bosque-soft`.
-- Caja: `bg-white border border-salvia rounded-lg px-3 py-2 text-sm leading-5 text-bosque`; con `mono` usa `font-mono`. Foco: `focus:border-bosque focus:outline-none focus:ring-1 focus:ring-bosque`.
-- `Select`: igual que Field pero con `<select>` (`appearance-none`, `pr-8`) y un chevron-down SVG de 16 px a la derecha (`pointer-events-none`, `currentColor`, trazo 1.5, path `M4 6l4 4 4-4`).
-- Los campos deben ocupar el ancho de su contenedor (el Figma usa 320 px solo como ejemplo).
-
-## 6. Campo para copiar (`CopyField`)
-Mantén la API actual. Cambios visuales: etiqueta como en Campo; fila con `gap-2`; caja de solo lectura con `font-mono text-sm`, `truncate`, mismo estilo de caja; botón `Copiar` = `Button variant="secondary"`. Al copiar, el texto cambia a `Copiado` 1,5 s (ya existe).
-
-## 7. Alerta (`Alert`)
-`rounded-lg border px-3 py-2 text-sm leading-5`. Tipos: `error` (danger), `warn` (warning), `ok` (success). Conserva `info`, que usa la v1.
-
-## 8. Encabezado de la app (`components/AppHeader.jsx`, nuevo)
-Props: `active` = `vaults` | `shared` | `audit` | `security`, `email`, `onLogout`.
-- Contenedor: `bg-white border-b border-niebla`, alto 60 px; contenido centrado en un `max-w-[1152px] mx-auto px-6` (el diseño usa 144 px de margen a 1440 de ancho; en pantallas menores se reduce), `py-3`, `flex items-center justify-between`.
-- Izquierda: `Brand small` + `gap-6` + pestañas con `gap-1`: **Bóvedas** (`/vaults`), **Compartidas conmigo** (`/shared`), **Auditoría** (`/audit`), **Seguridad** (`/security`), usando `next/link`.
-- Pestaña: `px-3 py-1.5 rounded-lg text-sm leading-5`. Activa: `bg-niebla font-medium text-bosque`. Inactiva: `text-bosque-soft hover:bg-niebla/60`. La activa lleva `aria-current="page"`.
-- Derecha: correo (`text-sm text-bosque-soft`, oculto en pantallas muy pequeñas) + `Button variant="secondary"` "Salir", `gap-3`.
-- Es componente cliente solo si necesita estado; si no, déjalo como servidor. No uses `localStorage` ni lo conectes a sesión todavía.
-- Navegación con teclado y `nav` con `aria-label="Principal"`.
+## Reglas de seguridad que aplican
+- Ningún dato de sesión, correo ni contraseña en `localStorage`/`sessionStorage`/cookies.
+- No imprimas contraseñas ni correos en consola.
+- El mismo mensaje de error para correo inexistente y contraseña incorrecta.
+- No agregues atajos de desarrollo (`?demo=…`) todavía.
 
 ## Verificación mínima
-- `npm run build` pasa sin errores ni advertencias nuevas; `npm run lint` si existe.
-- Las páginas v1 (`/login`, `/dashboard`, `/s/[token]`) siguen compilando.
-- Prueba visual rápida: crea una página temporal **sin commitearla** (por ejemplo `app/_demo/page.jsx`) que muestre todos los componentes y sus variantes, compárala contra esta tarea y bórrala antes del commit. Describe en el reporte qué viste.
+- `npm run build` sin errores ni advertencias nuevas; `/dashboard`, `/audit` y `/s/[token]` (v1) siguen compilando.
+- Con `npm run start`, en el navegador, a 1440 px y a 375 px, compara `/login` y `/register` con la descripción de esta tarea y anota qué viste. Casos: login correcto (`alex@upchiapas.edu.mx` + `DEMO_PASSWORD`) → navega a `/vaults`; contraseña incorrecta → el `Alert`; correo inexistente → el mismo mensaje; registro con menos de 12 caracteres → bloquea el navegador o el servicio; registro con correo existente → su mensaje; registro nuevo → entra, y luego `logout` + login con esa cuenta funciona (en la misma sesión de la página, sin recargar).
+- Comprueba que no se escribió nada en `localStorage`/`sessionStorage` (consola del navegador).
+- Dime en el reporte cuál es `DEMO_PASSWORD`, para que el usuario pueda probar.
 
-## Grafo de conocimiento (regla nueva)
-Lee `ai/grafo.md` y `ai/conocimiento/08-grafo-de-conocimiento.md`. Al terminar, en `ai/grafo.md`:
-- Actualiza los nodos de código que toques: `C-ui` (pasa a `hecho` y lista lo nuevo: `Button`, `Field`, `Select`, etc.), `C-tw`, `C-css` si lo cambias, y `C-header` (pon la ruta real y estado).
-- Agrega nodos para cualquier archivo nuevo que crees, con ruta real y relaciones.
-- Actualiza "Última actualización" y agrega una fila al "Registro de cambios del grafo".
-- No borres ni cambies filas de documentos, tareas, pantallas, conceptos ni externos (son de Claude Chat). Si algo de esas secciones está mal, anótalo como duda.
-- En `ai/reporte.md` agrega la sección **Grafo actualizado** (nodos creados, cambiados u obsoletos, o "sin cambios" con la razón). Sin esto no apruebo el PR.
+## Grafo de conocimiento
+Al terminar, en `ai/grafo.md` (solo nodos de código): pasa `C-authform` a `hecho` (ya no es v1), crea `C-session` (`components/SessionProvider.jsx`), pasa `C-mock` y `C-services` a `en curso` con sus rutas reales (`lib/mock/users.js`, `lib/services/auth.js`) y relaciones (`C-authform` → usa `C-session`, `C-services`, `C-ui`), actualiza `C-layout`, "Última actualización" y el registro de cambios. No toques documentos, tareas, pantallas, conceptos ni externos. En `ai/reporte.md` agrega **Grafo actualizado**.
 
 ## Entrega
-- Commits pequeños, sin prefijo, en español, **sin ninguna mención a Claude** (ni `Co-Authored-By` ni `Generated with`; revisa con `git log -1 --format=%B`). Autor: el usuario.
-- `git push -u origin 00-componentes-base` (**obligatorio**: la rama debe quedar en GitHub), abre el PR hacia `develop` con descripción corta y sin menciones a Claude.
-- Reescribe `ai/reporte.md` completo: ID T-02, rama, enlace del PR, qué se hizo, diferencias contra esta tarea, dudas D1, D2…
-
-## Decisiones (respuestas a T-01)
-Agrégalas al final de `ai/conocimiento/07-decisiones.md` en esta misma rama:
-- **No** se agrega `overrides` para el `postcss` 8.4.31 interno de Next: riesgo aceptado (solo en tiempo de compilación); se revisa cuando salga una 15.5.x con postcss actualizado.
-- `docker build` se verifica en una tarea final junto con `docker-compose`.
+- Commits pequeños (por ejemplo: datos de ejemplo, servicios, proveedor de sesión, pantalla de inicio de sesión, pantalla de registro, grafo, reporte), sin prefijo, en español, **sin ninguna mención a Claude**; revisa con `git log -1 --format=%B`. Autor: el usuario.
+- `git push -u origin 01-autenticacion` (obligatorio), abre el PR hacia `develop`, descripción corta sin menciones a Claude, y pon su enlace en el reporte.
+- Reescribe `ai/reporte.md` completo: ID T-03, rama, enlace del PR, qué hiciste, diferencias contra esta tarea, verificación, dudas D1, D2…, y **Grafo actualizado**.
