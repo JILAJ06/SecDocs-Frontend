@@ -143,13 +143,16 @@ export function CopyField({ label, value, mono = true }) {
   );
 }
 
+const ALERT_KINDS = {
+  error: 'border-danger-border bg-danger-bg text-danger-text',
+  warn: 'border-warning-border bg-warning-bg text-warning-text',
+  ok: 'border-success-border bg-success-bg text-success-text',
+  info: 'border-salvia bg-white text-bosque-soft', // solo v1
+};
+
+/** Alerta: error | warn | ok (Figma) e info (v1). No se dibuja si no hay contenido. */
 export function Alert({ kind = 'error', children }) {
   if (!children) return null;
-  const cls = {
-    error: 'border-danger-border bg-danger-bg text-danger-text',
-    warn: 'border-warning-border bg-warning-bg text-warning-text',
-    ok: 'border-success-border bg-success-bg text-success-text',
-    info: 'border-salvia bg-white text-bosque-soft',
-  }[kind];
-  return <div className={`rounded-lg border px-3 py-2 text-sm ${cls}`}>{children}</div>;
+  const cls = ALERT_KINDS[kind] || ALERT_KINDS.error;
+  return <div className={`rounded-lg border px-3 py-2 text-sm leading-5 ${cls}`}>{children}</div>;
 }
