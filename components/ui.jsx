@@ -2,18 +2,41 @@
 
 import { useState } from 'react';
 
+/** Logo: candado + "SecDocs". Grande (ícono 30 px, texto 24/32) o chico (ícono 22 px, texto 18/28). */
 export function Brand({ small = false }) {
+  const size = small ? 22 : 30;
   return (
     <div className="flex items-center gap-2">
-      <svg width={small ? 22 : 30} height={small ? 22 : 30} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="#00412E" strokeWidth="2" />
-        <path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="#00412E" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="12" cy="15.5" r="1.6" fill="#00412E" />
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 text-bosque">
+        <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" strokeWidth="2" />
+        <path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="12" cy="15.5" r="1.6" fill="currentColor" />
       </svg>
-      <span className={`${small ? 'text-lg' : 'text-2xl'} font-bold tracking-tight`}>
+      <span className={`${small ? 'text-lg leading-7' : 'text-2xl leading-8'} font-bold tracking-[-0.5px] text-bosque`}>
         Sec<span className="text-salvia">Docs</span>
       </span>
     </div>
+  );
+}
+
+const BUTTON_VARIANTS = {
+  primary: 'bg-bosque text-white hover:bg-bosque-hover',
+  secondary: 'bg-white border border-salvia text-bosque-neutral hover:bg-niebla',
+  danger: 'bg-white border border-danger-border text-danger-text hover:bg-danger-bg',
+};
+
+/** Botón del Figma: variantes primary | secondary | danger. */
+export function Button({ variant = 'primary', type = 'button', disabled = false, className = '', children, ...rest }) {
+  const look = BUTTON_VARIANTS[variant] || BUTTON_VARIANTS.primary;
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold leading-5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia disabled:cursor-not-allowed disabled:opacity-50 ${look} ${className}`}
+      {...rest}
+    >
+      {children}
+    </button>
   );
 }
 
