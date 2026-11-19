@@ -5,7 +5,7 @@
 
 **Tarea:** T-02 · Tokens de diseño y componentes compartidos
 **Rama:** `00-componentes-base`
-**Pull Request:** _(se agrega en el siguiente commit, después de abrirlo)_
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/3 (hacia `develop`)
 **Estado:** Completada
 **Fecha:** 2026-11-19
 
