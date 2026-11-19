@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 /** Logo: candado + "SecDocs". Grande (ícono 30 px, texto 24/32) o chico (ícono 22 px, texto 18/28). */
 export function Brand({ small = false }) {
@@ -76,6 +76,45 @@ export function StatusBadge({ status }) {
   );
 }
 
+const FIELD_LABEL = 'text-xs font-medium uppercase leading-4 tracking-[0.6px] text-bosque-soft';
+const FIELD_BOX =
+  'w-full rounded-lg border border-salvia bg-white px-3 py-2 text-sm leading-5 text-bosque placeholder-bosque-muted focus:border-bosque focus:outline-none focus:ring-1 focus:ring-bosque';
+
+/** Campo de texto con etiqueta. `mono` usa JetBrains Mono (claves, tokens, URLs). */
+export function Field({ label, id, mono = false, type = 'text', className = '', ...rest }) {
+  const autoId = useId();
+  const fieldId = id || autoId;
+  return (
+    <div className="flex flex-col gap-1">
+      {label && <label htmlFor={fieldId} className={FIELD_LABEL}>{label}</label>}
+      <input id={fieldId} type={type} className={`${FIELD_BOX} ${mono ? 'font-mono' : ''} ${className}`} {...rest} />
+    </div>
+  );
+}
+
+/** Selector con etiqueta y chevron propio. Las opciones van como children. */
+export function Select({ label, id, mono = false, className = '', children, ...rest }) {
+  const autoId = useId();
+  const fieldId = id || autoId;
+  return (
+    <div className="flex flex-col gap-1">
+      {label && <label htmlFor={fieldId} className={FIELD_LABEL}>{label}</label>}
+      <div className="relative">
+        <select id={fieldId} className={`${FIELD_BOX} appearance-none pr-8 ${mono ? 'font-mono' : ''} ${className}`} {...rest}>
+          {children}
+        </select>
+        <svg
+          width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-bosque"
+        >
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/** Valor de solo lectura con botón para copiarlo al portapapeles. */
 export function CopyField({ label, value, mono = true }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
@@ -88,13 +127,17 @@ export function CopyField({ label, value, mono = true }) {
     }
   };
   return (
-    <div>
-      <span className="label">{label}</span>
+    <div className="flex flex-col gap-1">
+      {label && <span className={FIELD_LABEL}>{label}</span>}
       <div className="flex gap-2">
-        <input readOnly value={value} className={`input ${mono ? 'font-mono' : ''}`} onFocus={(e) => e.target.select()} />
-        <button type="button" onClick={copy} className="btn-ghost shrink-0">
+        <input
+          readOnly value={value} aria-label={label}
+          className={`${FIELD_BOX} min-w-0 truncate ${mono ? 'font-mono' : ''}`}
+          onFocus={(e) => e.target.select()}
+        />
+        <Button variant="secondary" onClick={copy} className="shrink-0">
           {copied ? 'Copiado' : 'Copiar'}
-        </button>
+        </Button>
       </div>
     </div>
   );
