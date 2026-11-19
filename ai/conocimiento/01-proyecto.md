@@ -11,7 +11,7 @@
 ## Repositorios (son tres, separados)
 | Repo | Contenido | Estado |
 |---|---|---|
-| `SecDocs-Frontend` | Next.js 14 + Tailwind (**aquí trabajas**) | código subido |
+| `SecDocs-Frontend` | Next.js 15 + React 19 + Tailwind 3 (**aquí trabajas**) | código subido |
 | `SecDocs-Backend` | API Node.js/Express | código subido, **no se toca** desde esta tarea |
 | `SecDocs-DB` | Esquema PostgreSQL | **no se toca** |
 
