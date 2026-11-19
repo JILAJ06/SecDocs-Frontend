@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Chat (T-03 planeada)
+**Última actualización:** 2026-11-19 · Claude Code (nodos de código al terminar T-03)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -78,13 +78,14 @@ graph LR
 | C-ui | `components/ui.jsx` | hecho | `Brand` (grande/chico, `currentColor`), `Button` (primary/secondary/danger), `StatusBadge` (12 estados v1+v2), `Field`, `Select`, `CopyField` (→ usa `Button`), `Alert` (error/warn/ok + info v1); → usa C-tw; lo usan C-header, C-shell, C-authform, V1-dashboard, V1-audit, V1-share |
 | C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; sin estado ni sesión |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
-| C-authform | `components/AuthForm.jsx` | hecho | v1; → usa C-ui, C-api |
+| C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
+| C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut` y `useSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout y C-authform |
 | C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
-| C-mock | — | planeado | `lib/mock/` datos de ejemplo → K-mock |
-| C-services | — | planeado | `lib/services/` funciones async sobre C-mock |
+| C-mock | `lib/mock/users.js` | en curso | usuarios de ejemplo, `DEMO_PASSWORD` falsa y contraseñas de cuentas nuevas en memoria → K-mock; lo usa C-services |
+| C-services | `lib/services/auth.js` | en curso | `login`, `register`, `logout` (async, espera simulada 300–500 ms) → usa C-mock; lo usa C-session |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
-| C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono |
+| C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
 | C-css | `app/globals.css` | hecho | clases `.btn-*`, `.input`, `.badge` (v1) |
 | C-docker | `Dockerfile` | hecho | `npm ci`; `docker build` sin verificar (D-07) |
 
@@ -105,3 +106,4 @@ graph LR
 | 2026-11-19 | Claude Code | T-02: C-ui, C-tw y C-header pasan a `hecho` (C-header con ruta real `components/AppHeader.jsx`); C-css, C-layout sin cambios |
 | 2026-11-19 | Claude Chat | T-02 revisada y aprobada: pasa a `hecho` (PR #3) |
 | 2026-11-19 | Claude Chat | T-03 `en curso` (`01-autenticacion`): S-01, S-02 y K-mock `en curso`; tareas de pantallas renumeradas desde T-04 |
+| 2026-11-19 | Claude Code | T-03: C-authform pasa a v2 (`hecho`); nuevo C-session; C-mock y C-services `en curso` con rutas reales; C-layout envuelve con C-session |
