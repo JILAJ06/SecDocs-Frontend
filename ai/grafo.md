@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Chat (creación del grafo, estado al iniciar T-02)
+**Última actualización:** 2026-11-19 · Claude Code (nodos de código al terminar T-02)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -74,14 +74,14 @@ graph LR
 ## Código
 | ID | Ruta | Estado | Relaciones |
 |---|---|---|---|
-| C-ui | `components/ui.jsx` | en curso | `Brand`, `StatusBadge`, `CopyField`, `Alert`; T-02 añade `Button`, `Field`, `Select` |
-| C-header | — | planeado | `components/AppHeader.jsx` (T-02) → usa C-ui |
+| C-ui | `components/ui.jsx` | hecho | `Brand` (grande/chico, `currentColor`), `Button` (primary/secondary/danger), `StatusBadge` (12 estados v1+v2), `Field`, `Select`, `CopyField` (→ usa `Button`), `Alert` (error/warn/ok + info v1); → usa C-tw; lo usan C-header, C-shell, C-authform, V1-dashboard, V1-audit, V1-share |
+| C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; sin estado ni sesión |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v1; → usa C-ui, C-api |
 | C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
 | C-mock | — | planeado | `lib/mock/` datos de ejemplo → K-mock |
 | C-services | — | planeado | `lib/services/` funciones async sobre C-mock |
-| C-tw | `tailwind.config.js` | en curso | tokens (T-02: `bosque-neutral`, `content` con `lib`) |
+| C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono |
 | C-css | `app/globals.css` | hecho | clases `.btn-*`, `.input`, `.badge` (v1) |
@@ -101,3 +101,4 @@ graph LR
 | Fecha | Quién | Cambio |
 |---|---|---|
 | 2026-11-19 | Claude Chat | Creación del grafo; T-00 y T-01 `hecho`, T-02 `en curso` |
+| 2026-11-19 | Claude Code | T-02: C-ui, C-tw y C-header pasan a `hecho` (C-header con ruta real `components/AppHeader.jsx`); C-css, C-layout sin cambios |
