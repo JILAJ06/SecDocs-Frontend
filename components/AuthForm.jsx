@@ -6,16 +6,33 @@ import { useEffect, useState } from 'react';
 import { useSession } from './SessionProvider';
 import { Alert, Brand, Button, Field } from './ui';
 
-/** Pantalla 01 Iniciar sesión (Figma 6:23), v2 con sesión simulada. */
+const TEXTS = {
+  login: {
+    title: 'Iniciar sesión',
+    submit: 'Entrar',
+    question: '¿No tienes cuenta?',
+    link: ['/register', 'Regístrate'],
+  },
+  register: {
+    title: 'Crear cuenta',
+    submit: 'Registrarme',
+    question: '¿Ya tienes cuenta?',
+    link: ['/login', 'Inicia sesión'],
+  },
+};
+
+/** Pantallas 01 Iniciar sesión (Figma 6:23) y 02 Crear cuenta (6:52), v2 con sesión simulada. */
 export default function AuthForm({ mode }) {
   const router = useRouter();
-  const { session, signIn } = useSession();
+  const { session, signIn, signUp } = useSession();
+  const isLogin = mode !== 'register';
+  const t = TEXTS[isLogin ? 'login' : 'register'];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  // Con sesión abierta no tiene sentido volver a entrar.
+  // Con sesión abierta no tiene sentido volver a entrar ni registrarse.
   useEffect(() => {
     if (session) router.replace('/vaults');
   }, [session, router]);
@@ -25,7 +42,7 @@ export default function AuthForm({ mode }) {
     setError('');
     setBusy(true);
     try {
-      await signIn(email, password);
+      await (isLogin ? signIn : signUp)(email, password);
       router.replace('/vaults');
     } catch (err) {
       setError(err.message);
@@ -44,27 +61,34 @@ export default function AuthForm({ mode }) {
           </p>
         </div>
         <form onSubmit={submit} className="flex flex-col gap-4 rounded-2xl border border-niebla bg-white p-5">
-          <h1 className="text-lg font-semibold leading-7 text-bosque">Iniciar sesión</h1>
+          <h1 className="text-lg font-semibold leading-7 text-bosque">{t.title}</h1>
           <Field
             label="Correo" type="email" required autoComplete="email"
             value={email} onChange={(e) => setEmail(e.target.value)}
           />
-          <Field
-            label="Contraseña" type="password" required maxLength={72} autoComplete="current-password"
-            value={password} onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <Field
+              label="Contraseña" type="password" required maxLength={72}
+              minLength={isLogin ? undefined : 12}
+              autoComplete={isLogin ? 'current-password' : 'new-password'}
+              value={password} onChange={(e) => setPassword(e.target.value)}
+            />
+            {!isLogin && (
+              <p className="text-xs leading-4 text-bosque-muted">Mínimo 12 caracteres. Se guarda con bcrypt (costo 12).</p>
+            )}
+          </div>
           {error && (
             <div role="alert">
               <Alert kind="error">{error}</Alert>
             </div>
           )}
           <Button type="submit" disabled={busy} className="w-full">
-            {busy ? 'Procesando…' : 'Entrar'}
+            {busy ? 'Procesando…' : t.submit}
           </Button>
           <p className="flex justify-center gap-1 text-sm leading-5">
-            <span className="text-bosque-soft">¿No tienes cuenta?</span>
-            <Link href="/register" className="font-medium text-bosque underline underline-offset-2">
-              Regístrate
+            <span className="text-bosque-soft">{t.question}</span>
+            <Link href={t.link[0]} className="font-medium text-bosque underline underline-offset-2">
+              {t.link[1]}
             </Link>
           </p>
         </form>
