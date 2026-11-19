@@ -5,7 +5,7 @@
 
 **Tarea:** T-03 · Iniciar sesión y Crear cuenta (con datos de ejemplo)
 **Rama:** `01-autenticacion`
-**Pull Request:** (pendiente)
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/4 (hacia `develop`)
 **Estado:** Completada
 **Fecha:** 2026-11-19
 
