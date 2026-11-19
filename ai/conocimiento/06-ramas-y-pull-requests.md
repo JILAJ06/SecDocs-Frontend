@@ -15,8 +15,8 @@
 ## Ciclo de una tarea
 1. **Claude Chat** crea la rama desde `develop`, escribe `ai/siguiente.md` **en esa rama** (con el nombre de la rama en el encabezado) y la sube. Luego le dice al usuario qué decirle a Claude Code.
 2. **Claude Code** hace `git fetch origin`, `git checkout <rama>` y `git pull`, y trabaja la tarea con commits pequeños en esa rama.
-3. Al terminar, Claude Code reescribe `ai/reporte.md` (en la misma rama), sube la rama y **abre el Pull Request hacia `develop`** (ver abajo).
-4. **Claude Chat** revisa el Pull Request: lee el código contra el Figma y el reporte. Si hay cambios, los pide en un nuevo `siguiente.md` sobre la **misma rama**.
+3. Al terminar, Claude Code actualiza `ai/grafo.md`, reescribe `ai/reporte.md` (en la misma rama, con su sección "Grafo actualizado"), sube la rama y **abre el Pull Request hacia `develop`** (ver abajo).
+4. **Claude Chat** revisa el Pull Request: lee el código contra el Figma y el reporte, y verifica el grafo. Si hay cambios, los pide en un nuevo `siguiente.md` sobre la **misma rama**.
 5. Cuando todo está bien, **el usuario hace el merge** a `develop` con **merge commit** (no squash, no rebase), para conservar los commits.
 6. Si después aparece un error en una tarea terminada, se crea `fix/NN-nombre` desde `develop` y se repite el ciclo.
 

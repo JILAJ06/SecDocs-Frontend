@@ -14,6 +14,7 @@ Dejar listos, sin pantallas todavía, los componentes que usarán todas las vist
 - `components/AppHeader.jsx` (nuevo)
 - `app/layout.jsx` solo si hace falta para las fuentes (Inter y JetBrains Mono con `next/font`, variables `--font-inter` y `--font-mono`; si ya están, no lo toques)
 - `ai/conocimiento/07-decisiones.md`, `ai/reporte.md`
+- `ai/grafo.md` (solo los nodos de código; ver abajo)
 - Prohibido: pantallas nuevas, rutas, `lib/mock`, backend, dependencias nuevas.
 
 ## 1. Tokens (`tailwind.config.js`)
@@ -84,9 +85,17 @@ Props: `active` = `vaults` | `shared` | `audit` | `security`, `email`, `onLogout
 - Las páginas v1 (`/login`, `/dashboard`, `/s/[token]`) siguen compilando.
 - Prueba visual rápida: crea una página temporal **sin commitearla** (por ejemplo `app/_demo/page.jsx`) que muestre todos los componentes y sus variantes, compárala contra esta tarea y bórrala antes del commit. Describe en el reporte qué viste.
 
+## Grafo de conocimiento (regla nueva)
+Lee `ai/grafo.md` y `ai/conocimiento/08-grafo-de-conocimiento.md`. Al terminar, en `ai/grafo.md`:
+- Actualiza los nodos de código que toques: `C-ui` (pasa a `hecho` y lista lo nuevo: `Button`, `Field`, `Select`, etc.), `C-tw`, `C-css` si lo cambias, y `C-header` (pon la ruta real y estado).
+- Agrega nodos para cualquier archivo nuevo que crees, con ruta real y relaciones.
+- Actualiza "Última actualización" y agrega una fila al "Registro de cambios del grafo".
+- No borres ni cambies filas de documentos, tareas, pantallas, conceptos ni externos (son de Claude Chat). Si algo de esas secciones está mal, anótalo como duda.
+- En `ai/reporte.md` agrega la sección **Grafo actualizado** (nodos creados, cambiados u obsoletos, o "sin cambios" con la razón). Sin esto no apruebo el PR.
+
 ## Entrega
 - Commits pequeños, sin prefijo, en español, **sin ninguna mención a Claude** (ni `Co-Authored-By` ni `Generated with`; revisa con `git log -1 --format=%B`). Autor: el usuario.
-- `git push -u origin 00-componentes-base`, abre el PR hacia `develop` con descripción corta y sin menciones a Claude.
+- `git push -u origin 00-componentes-base` (**obligatorio**: la rama debe quedar en GitHub), abre el PR hacia `develop` con descripción corta y sin menciones a Claude.
 - Reescribe `ai/reporte.md` completo: ID T-02, rama, enlace del PR, qué se hizo, diferencias contra esta tarea, dudas D1, D2…
 
 ## Decisiones (respuestas a T-01)
