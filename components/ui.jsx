@@ -40,18 +40,40 @@ export function Button({ variant = 'primary', type = 'button', disabled = false,
   );
 }
 
-const STATUS = {
-  ACTIVE: ['Activo', 'bg-success-bg text-success-text ring-1 ring-success-border'],
-  CONSUMED: ['Consumido', 'bg-info-bg text-info-text ring-1 ring-info-border'],
-  EXPIRED: ['Expirado', 'bg-niebla text-bosque-soft ring-1 ring-salvia'],
-  REVOKED: ['Revocado', 'bg-warning-bg text-warning-text ring-1 ring-warning-border'],
-  LOCKED: ['Bloqueado', 'bg-danger-bg text-danger-text ring-1 ring-danger-border'],
-  PURGED: ['Destruido', 'bg-niebla text-bosque-soft ring-1 ring-salvia'],
+const TONES = {
+  success: 'bg-success-bg border-success-border text-success-text',
+  info: 'bg-info-bg border-info-border text-info-text',
+  warning: 'bg-warning-bg border-warning-border text-warning-text',
+  danger: 'bg-danger-bg border-danger-border text-danger-text',
+  niebla: 'bg-niebla border-salvia text-bosque-neutral',
+  purged: 'bg-niebla border-salvia text-bosque-soft',
 };
 
+// Claves v1 (enlaces y archivos) + v2 (bóvedas, miembros, invitaciones).
+// Las terminadas en _F son la forma femenina (bóveda): Activa, Expirada, Bloqueada.
+const STATUS = {
+  ACTIVE: ['Activo', 'success'],
+  ACTIVE_F: ['Activa', 'success'],
+  ACCEPTED: ['Aceptada', 'success'],
+  CONSUMED: ['Consumido', 'info'],
+  PENDING: ['Pendiente', 'info'],
+  EXPIRED: ['Expirado', 'niebla'],
+  EXPIRED_F: ['Expirada', 'niebla'],
+  PURGED: ['Destruido', 'purged'],
+  REVOKED: ['Revocado', 'warning'],
+  TEMP_LOCK: ['Bloqueo temporal', 'warning'],
+  LOCKED: ['Bloqueado', 'danger'],
+  LOCKED_F: ['Bloqueada', 'danger'],
+};
+
+/** Píldora de estado. `status` es una clave de STATUS; si no existe, se muestra tal cual en gris. */
 export function StatusBadge({ status }) {
-  const [label, cls] = STATUS[status] || [status, 'bg-niebla text-bosque-soft'];
-  return <span className={`badge ${cls}`}>{label}</span>;
+  const [label, tone] = STATUS[status] || [status, 'niebla'];
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold leading-4 ${TONES[tone]}`}>
+      {label}
+    </span>
+  );
 }
 
 export function CopyField({ label, value, mono = true }) {
