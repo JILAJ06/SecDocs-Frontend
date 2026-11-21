@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-08)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-09)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -93,7 +93,8 @@ graph LR
 | C-vaults | `app/vaults/page.jsx` | hecho | pantalla S-03 Mis bóvedas (+ modal 03b) → usa C-header, C-metrica, C-vaultcard, C-newvaultmodal, C-session, C-services, C-ui |
 | C-card | `components/Card.jsx` | hecho | tarjeta base de columnas de detalle (título, subtítulo, acción) → usa C-tw; lo usa C-vaultdetail |
 | C-filerow | `components/FileRow.jsx` | hecho | fila de archivo (`h-16`, variantes `owner` Destruir y `shared` Descargar) → usa C-ui (`Button`); lo usa C-vaultdetail |
-| C-vaultdetail | `app/vaults/[id]/page.jsx` | en curso | pantalla S-04 Detalle de bóveda (encabezado, migas, acciones y sección Archivos) → usa C-header, C-card, C-filerow, C-modal, C-session, C-services, C-ui |
+| C-memberrow | `components/MemberRow.jsx` | hecho | fila de miembro o invitación (`h-11`, confirmación inline) → usa C-ui (`StatusBadge`); lo usa C-vaultdetail |
+| C-vaultdetail | `app/vaults/[id]/page.jsx` | en curso | pantalla S-04 Detalle de bóveda (encabezado, archivos y miembros) → usa C-header, C-card, C-filerow, C-memberrow, C-modal, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
@@ -131,3 +132,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-06: nuevos C-modal (`components/Modal.jsx`) y C-newvaultmodal (`components/NewVaultModal.jsx`); C-vaults pasa a `hecho` |
 | 2026-11-20 | Claude Code | T-07: nuevos C-card (`components/Card.jsx`) y C-vaultdetail (`app/vaults/[id]/page.jsx`) |
 | 2026-11-20 | Claude Code | T-08: nuevo C-filerow (`components/FileRow.jsx`); C-vaultdetail incorpora la tarjeta Archivos |
+| 2026-11-20 | Claude Code | T-09: nuevo C-memberrow (`components/MemberRow.jsx`); C-vaultdetail incorpora la tabla de miembros e invitaciones |
