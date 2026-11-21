@@ -21,3 +21,7 @@ Respuestas de Claude Chat a las dudas del reporte T-00 y otras decisiones del pr
 | `AppHeader` y `onLogout` | Se queda sin `'use client'`. Lo usan pantallas cliente; una página de servidor debe omitir `onLogout` o envolverlo en un componente cliente. |
 | Encabezado en móvil | Basta con las pestañas desplazables; no se hace menú compacto (el Figma no lo tiene). |
 | `StatusBadge` en la v1 | El cambio visual mínimo de `EXPIRED` en la v1 se acepta. |
+| Tarea 01 | Las pantallas 01 (Iniciar sesión) y 02 (Crear cuenta) van juntas en la rama `01-autenticacion` porque comparten componente. |
+| Redirección tras entrar | Login y registro llevan a `/vaults` aunque la pantalla 03 aún no exista (404 temporal hasta la siguiente tarea). `/` sigue yendo a `/dashboard`. |
+| Frase de la marca | En 384 px la frase "Bóveda con cifrado…" no cabe en una línea (el Figma la corta): se permite partirla en dos líneas. |
+| Contraseña de la maqueta | Los usuarios de ejemplo comparten una `DEMO_PASSWORD` falsa documentada en `lib/mock/users.js`; no es un secreto. |

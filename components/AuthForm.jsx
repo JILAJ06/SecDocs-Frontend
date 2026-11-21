@@ -2,61 +2,93 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { api, errorMessage } from '@/lib/api';
-import { Alert, Brand } from './ui';
+import { useEffect, useState } from 'react';
+import { useSession } from './SessionProvider';
+import { Alert, Brand, Button, Field } from './ui';
 
+const TEXTS = {
+  login: {
+    title: 'Iniciar sesión',
+    submit: 'Entrar',
+    question: '¿No tienes cuenta?',
+    link: ['/register', 'Regístrate'],
+  },
+  register: {
+    title: 'Crear cuenta',
+    submit: 'Registrarme',
+    question: '¿Ya tienes cuenta?',
+    link: ['/login', 'Inicia sesión'],
+  },
+};
+
+/** Pantallas 01 Iniciar sesión (Figma 6:23) y 02 Crear cuenta (6:52), v2 con sesión simulada. */
 export default function AuthForm({ mode }) {
   const router = useRouter();
-  const isLogin = mode === 'login';
+  const { session, signIn, signUp } = useSession();
+  const isLogin = mode !== 'register';
+  const t = TEXTS[isLogin ? 'login' : 'register'];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  // Con sesión abierta no tiene sentido volver a entrar ni registrarse.
+  useEffect(() => {
+    if (session) router.replace('/vaults');
+  }, [session, router]);
 
   async function submit(e) {
     e.preventDefault();
     setError('');
     setBusy(true);
     try {
-      await api.post(isLogin ? '/auth/login' : '/auth/register', { email, password });
-      router.replace('/dashboard');
+      await (isLogin ? signIn : signUp)(email, password);
+      router.replace('/vaults');
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo completar la solicitud'));
+      setError(err.message);
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="flex flex-col items-center gap-2 text-center">
+    <main className="flex min-h-screen items-center justify-center bg-niebla px-4">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <div className="flex flex-col items-center gap-2">
           <Brand />
-          <p className="text-sm text-bosque-soft">Bóveda con cifrado en reposo y enlaces que se autodestruyen</p>
+          <p className="text-center text-sm leading-5 text-bosque-soft">
+            Bóveda con cifrado en reposo y enlaces que se autodestruyen
+          </p>
         </div>
-        <form onSubmit={submit} className="card space-y-4">
-          <h1 className="text-lg font-semibold">{isLogin ? 'Iniciar sesión' : 'Crear cuenta'}</h1>
-          <div>
-            <label className="label" htmlFor="email">Correo</label>
-            <input id="email" type="email" required autoComplete="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <label className="label" htmlFor="password">Contraseña</label>
-            <input
-              id="password" type="password" required className="input"
-              minLength={isLogin ? undefined : 12} maxLength={72}
+        <form onSubmit={submit} className="flex flex-col gap-4 rounded-2xl border border-niebla bg-white p-5">
+          <h1 className="text-lg font-semibold leading-7 text-bosque">{t.title}</h1>
+          <Field
+            label="Correo" type="email" required autoComplete="email"
+            value={email} onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="flex flex-col gap-1">
+            <Field
+              label="Contraseña" type="password" required maxLength={72}
+              minLength={isLogin ? undefined : 12}
               autoComplete={isLogin ? 'current-password' : 'new-password'}
               value={password} onChange={(e) => setPassword(e.target.value)}
             />
-            {!isLogin && <p className="mt-1 text-xs text-bosque-muted">Mínimo 12 caracteres. Se guarda con bcrypt (costo 12).</p>}
+            {!isLogin && (
+              <p className="text-xs leading-4 text-bosque-muted">Mínimo 12 caracteres. Se guarda con bcrypt (costo 12).</p>
+            )}
           </div>
-          <Alert>{error}</Alert>
-          <button className="btn-primary w-full" disabled={busy}>{busy ? 'Procesando…' : isLogin ? 'Entrar' : 'Registrarme'}</button>
-          <p className="text-center text-sm text-bosque-soft">
-            {isLogin ? '¿No tienes cuenta? ' : '¿Ya tienes cuenta? '}
-            <Link className="font-medium text-bosque underline underline-offset-2 hover:text-bosque-hover" href={isLogin ? '/register' : '/login'}>
-              {isLogin ? 'Regístrate' : 'Inicia sesión'}
+          {error && (
+            <div role="alert">
+              <Alert kind="error">{error}</Alert>
+            </div>
+          )}
+          <Button type="submit" disabled={busy} className="w-full">
+            {busy ? 'Procesando…' : t.submit}
+          </Button>
+          <p className="flex justify-center gap-1 text-sm leading-5">
+            <span className="text-bosque-soft">{t.question}</span>
+            <Link href={t.link[0]} className="font-medium text-bosque underline underline-offset-2">
+              {t.link[1]}
             </Link>
           </p>
         </form>
