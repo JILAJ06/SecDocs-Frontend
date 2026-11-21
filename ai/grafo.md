@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-19)
+**Última actualización:** 2026-11-21 · Claude Code (al terminar T-20)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -37,7 +37,7 @@ graph LR
 | D-07 | `ai/conocimiento/07-decisiones.md` | hecho | → manda sobre los demás |
 | D-08 | `ai/conocimiento/08-grafo-de-conocimiento.md` | hecho | → define D-GRF |
 | D-SIG | `ai/siguiente.md` | en curso | → apunta a D-PLAN |
-| D-PLAN | `ai/plan-vistas.md` | en curso | → plan completo T-03 ajuste a T-19; reemplaza el ciclo tarea por tarea |
+| D-PLAN | `ai/plan-vistas.md` | hecho | → plan completo T-03 ajuste a T-19; reemplaza el ciclo tarea por tarea |
 | D-REP | `ai/reporte.md` | en curso | → reporte de Code |
 | D-GRF | `ai/grafo.md` | en curso | este archivo |
 
@@ -47,16 +47,9 @@ graph LR
 | T-00 | `00-reconocimiento` | hecho | PR #1 → D-04 |
 | T-01 | `00-dependencias` | hecho | PR #2 → X-next, X-react |
 | T-02 | `00-componentes-base` | hecho | PR #3 → C-tw, C-ui, C-header |
-| T-03 | `01-autenticacion` | en curso | → S-01, S-02, C-session, C-services, K-mock |
-| T-04 | `02-datos-y-servicios` | planeado | → C-mock, C-services (ver D-PLAN) |
-| T-05 | `03-mis-boveda-lista` | planeado | → S-03 |
-| T-06 | `04-modal-nueva-boveda` | planeado | → S-03 (modal 03b) |
-| T-07…T-10 | `05-detalle-encabezado`, `06-detalle-archivos`, `07-detalle-miembros`, `08-detalle-invitar-llaves` | planeado | → S-04 |
-| T-11…T-13 | `09-invitacion-login`, `10-invitacion-verificada`, `11-invitacion-denegada` | planeado | → S-05, S-06, S-07 |
-| T-14, T-15 | `12-boveda-compartida-contrasena`, `13-boveda-compartida-archivos` | planeado | → S-09, S-10, S-13 |
-| T-16 | `14-auditoria` | planeado | → S-11 |
-| T-17 | `15-seguridad` | planeado | → S-12 |
-| T-18, T-19 | `16-pulido-y-accesibilidad`, `17-cierre` | planeado | → todo el frontend |
+| T-03 | `01-autenticacion` | hecho | PR #4 → S-01, S-02, C-session, C-services, K-mock |
+| T-04…T-19 | `02-vistas-v2` | hecho | PR #5 → S-03…S-13, C-mock, C-services (ver D-PLAN) |
+| T-20 | `fix/02-vistas-v2` | hecho | → C-services (token de invitación con `crypto.getRandomValues`); corrige nota de Docker en D-REP |
 
 ## Pantallas v2 (Figma, sección "04 · Pantallas")
 | ID | Pantalla | Ruta | Figma | Estado | Relaciones |
@@ -150,3 +143,5 @@ graph LR
 | 2026-11-20 | Claude Code | T-17: nuevos C-sessionrow (`components/SessionRow.jsx`) y C-security (`app/security/page.jsx`); C-mock y C-services completan `sessions.js` y pasan a `hecho` |
 | 2026-11-20 | Claude Code | T-18: títulos `metadata.title` por ruta, mejoras de accesibilidad/estados vacíos; C-shell y C-api pasan a `obsoleto` |
 | 2026-11-20 | Claude Code | T-19: actualiza `README.md` (C-readme `hecho`), verifica compilación, reglas de seguridad y deja el resumen global en `ai/reporte.md` |
+| 2026-11-21 | Claude Chat | PR #5 revisado y mezclado: T-03 y T-04…T-19 `hecho`; T-20 `en curso` (`fix/02-vistas-v2`) |
+| 2026-11-21 | Claude Code | T-20: `generateMockToken` en `lib/services/vaults.js` usa `crypto.getRandomValues` con muestreo por rechazo; T-20 pasa a `hecho` |
