@@ -9,10 +9,11 @@ import FileRow from '@/components/FileRow';
 import MemberRow from '@/components/MemberRow';
 import Modal from '@/components/Modal';
 import { useRequireSession, useSession } from '@/components/SessionProvider';
-import { Alert, Button, StatusBadge } from '@/components/ui';
+import { Alert, Button, CopyField, Field, Select, StatusBadge } from '@/components/ui';
 import {
   addFile,
   cancelInvitation,
+  createInvitation,
   destroyFile,
   destroyVault,
   getVault,
@@ -27,6 +28,13 @@ const VAULT_STATUS_BADGE = {
   LOCKED: 'LOCKED_F',
   EXPIRED: 'EXPIRED_F',
 };
+
+const INVITE_EXPIRATION_OPTIONS = [
+  [24, '24 horas'],
+  [48, '48 horas'],
+  [72, '72 horas'],
+  [168, '168 horas'],
+];
 
 export default function VaultDetailPage() {
   const { id } = useParams();
@@ -48,6 +56,12 @@ export default function VaultDetailPage() {
   const [fileError, setFileError] = useState('');
   const [fileToDestroy, setFileToDestroy] = useState(null);
   const [destroyingFile, setDestroyingFile] = useState(false);
+
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteHours, setInviteHours] = useState(48);
+  const [inviting, setInviting] = useState(false);
+  const [inviteError, setInviteError] = useState('');
+  const [createdInvitation, setCreatedInvitation] = useState(null);
 
   const loadVaultData = useCallback(async () => {
     setLoading(true);
@@ -155,10 +169,35 @@ export default function VaultDetailPage() {
     );
   }
 
+  async function handleCreateInvitation(e) {
+    e.preventDefault();
+    if (!vault) return;
+    setInviteError('');
+    setInviting(true);
+    try {
+      const result = await createInvitation(vault.id, {
+        email: inviteEmail,
+        expiresInHours: inviteHours,
+      });
+      setMembers((prev) => [...prev, result.member]);
+      setVault((prev) => (prev ? { ...prev, membersCount: prev.membersCount + 1 } : prev));
+      setCreatedInvitation({
+        email: result.member.email,
+        url: result.url,
+      });
+      setInviteEmail('');
+    } catch (err) {
+      setInviteError(err.message || 'Correo inválido');
+    } finally {
+      setInviting(false);
+    }
+  }
+
   const isLocked = vault?.status === 'LOCKED';
   const badgeKey = vault ? VAULT_STATUS_BADGE[vault.status] || vault.status : 'ACTIVE_F';
-  const filesText = vault ? `${vault.filesCount} ${vault.filesCount === 1 ? 'archivo' : 'archivos'}` : '';
-  const membersText = vault ? `${vault.membersCount} ${vault.membersCount === 1 ? 'miembro' : 'miembros'}` : '';
+  const activeFilesCount = files.filter((f) => !f.uploading).length;
+  const filesText = vault ? `${activeFilesCount} ${activeFilesCount === 1 ? 'archivo' : 'archivos'}` : '';
+  const membersText = vault ? `${members.length} ${members.length === 1 ? 'miembro' : 'miembros'}` : '';
 
   return (
     <div className="min-h-screen bg-niebla">
@@ -304,8 +343,74 @@ export default function VaultDetailPage() {
               </div>
 
               <aside className="flex w-full shrink-0 flex-col gap-6 lg:w-[400px]">
-                <Card title="Invitar por correo" />
-                <Card title="Llaves de esta bóveda" />
+                <section className="flex flex-col gap-3.5 rounded-2xl border border-niebla bg-white p-5">
+                  <h2 className="text-lg font-semibold leading-7 text-bosque">Invitar por correo</h2>
+                  <p className="text-sm leading-5 text-bosque-soft">
+                    La invitación queda amarrada a un correo. Aunque el enlace se reenvíe, nadie más podrá entrar.
+                  </p>
+                  <form onSubmit={handleCreateInvitation} noValidate className="flex flex-col gap-3.5">
+                    <Field
+                      label="Correo del destinatario"
+                      type="email"
+                      placeholder="correo@empresa.com"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                    />
+                    <Select
+                      label="La invitación expira en"
+                      value={inviteHours}
+                      onChange={(e) => setInviteHours(Number(e.target.value))}
+                    >
+                      {INVITE_EXPIRATION_OPTIONS.map(([h, label]) => (
+                        <option key={h} value={h}>
+                          {label}
+                        </option>
+                      ))}
+                    </Select>
+                    {inviteError && (
+                      <div role="alert">
+                        <Alert kind="error">{inviteError}</Alert>
+                      </div>
+                    )}
+                    <Button type="submit" variant="primary" disabled={inviting} className="w-full">
+                      {inviting ? 'Creando…' : 'Crear invitación'}
+                    </Button>
+                  </form>
+
+                  {createdInvitation && (
+                    <div className="flex flex-col gap-3 rounded-xl border border-salvia bg-success-bg p-4">
+                      <h3 className="text-sm font-semibold leading-5 text-success-text">
+                        Invitación para {createdInvitation.email}
+                      </h3>
+                      <p className="text-xs leading-4 text-bosque-soft">
+                        Canal 1: comparte este enlace por WhatsApp, Teams o correo. Canal 2: SecDocs enviará la contraseña de la bóveda al correo del invitado sólo después de verificar su identidad.
+                      </p>
+                      <CopyField label="Enlace de invitación" value={createdInvitation.url} mono />
+                    </div>
+                  )}
+                </section>
+
+                <section className="flex flex-col gap-2.5 rounded-2xl border border-niebla bg-white p-5">
+                  <h2 className="text-base font-semibold leading-6 text-bosque">Llaves de esta bóveda</h2>
+                  <div className="flex items-center justify-between text-sm leading-5">
+                    <span className="text-bosque-soft">KEK</span>
+                    <span className="font-mono text-xs leading-4 text-bosque">
+                      {vault.kekVersion} · creada {vault.kekCreatedAt || vault.createdAt}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm leading-5">
+                    <span className="text-bosque-soft">DEKs activas</span>
+                    <span className="font-mono text-xs leading-4 text-bosque">
+                      {activeFilesCount} (una por archivo)
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm leading-5">
+                    <span className="text-bosque-soft">Almacenamiento</span>
+                    <span className="font-mono text-xs leading-4 text-bosque">
+                      Cloudflare R2 · nombres UUID
+                    </span>
+                  </div>
+                </section>
               </aside>
             </div>
 
