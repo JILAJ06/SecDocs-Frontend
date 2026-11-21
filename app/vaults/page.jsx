@@ -102,6 +102,9 @@ export default function VaultsPage() {
             )}
 
             <section aria-label="Lista de bóvedas" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex lg:flex-wrap lg:gap-6">
+              {items.length === 0 && (
+                <p className="w-full text-sm text-bosque-soft">Aún no tienes bóvedas activas. Crea la primera.</p>
+              )}
               {items.map((vault) => (
                 <VaultCard key={vault.id} vault={vault} />
               ))}
