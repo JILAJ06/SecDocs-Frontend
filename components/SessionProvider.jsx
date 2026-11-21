@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import * as auth from '@/lib/services/auth';
 
 const SessionContext = createContext(null);
@@ -37,4 +38,19 @@ export function useSession() {
   const ctx = useContext(SessionContext);
   if (!ctx) throw new Error('useSession debe usarse dentro de <SessionProvider>');
   return ctx;
+}
+
+/**
+ * Guardia de sesión para páginas protegidas.
+ * Devuelve la sesión activa o redirige a `/login` si no hay sesión en memoria.
+ */
+export function useRequireSession() {
+  const { session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) router.replace('/login');
+  }, [session, router]);
+
+  return session;
 }
