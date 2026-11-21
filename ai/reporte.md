@@ -3,22 +3,24 @@
 > Claude Code: reescribe **todo** este archivo al terminar cada tarea (no lo acumules).
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
-**Tarea:** T-10 · Detalle: invitar y llaves
+**Tarea:** T-11 · Invitación: iniciar sesión
 **Rama:** `02-vistas-v2`
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
 ## Qué hice
-- **`app/vaults/[id]/page.jsx`:**
-  - Tarjeta lateral "Invitar por correo" (`rounded-2xl border border-niebla bg-white p-5 gap-3.5`) con `Field` "Correo del destinatario", `Select` "La invitación expira en" (24, 48 por defecto, 72, 168 horas), botón primario "Crear invitación" y bloque desplegable "Invitación creada" (`rounded-xl border border-salvia bg-success-bg p-4 gap-3`) con `CopyField` "Enlace de invitación" (`https://secdocs.app/invitacion/<token>`).
-  - Al crear una invitación se agrega la fila `PENDING` en la tabla de miembros y se actualiza el contador del encabezado.
-  - Tarjeta lateral "Llaves de esta bóveda" (`p-5 gap-2.5`, título 16/24 semibold) con las 3 filas: `KEK` → `v1 · creada 01/11/26`, `DEKs activas` → `{n} (una por archivo)` (dinámico según la cuenta real de archivos) y `Almacenamiento` → `Cloudflare R2 · nombres UUID`.
+- **`lib/mock/audit.js` (nuevo):** bitácora inicial de 11 eventos y función `recordMockAuditEvent` para registrar en memoria los eventos de invitación, acceso y seguridad.
+- **`lib/services/invitations.js` (nuevo):** `getInvitation(token)`, `acceptInvitation(token, sessionEmail)`, `sendVaultPassword(token)`, enmascaramiento `maskEmail` (`a•••••r@empresa.com`) y texto de referencia del correo de canal 2 (`buildChannel2EmailPreview`, vista 08).
+- **`components/AuthForm.jsx`:** soporte seguro para el parámetro `?next=` (solo rutas internas que empiecen con `/`, nunca `//` ni URLs externas).
+- **`app/invitacion/[token]/page.jsx` (nuevo):** pantalla 05 (`30:877`, sin encabezado, columna de 420 px) con `Brand` grande, aviso verde con círculo de 44×44 e ícono de sobre, tarjeta de login ("Iniciar sesión para aceptar", botón "Entrar y verificar identidad", enlace "Regístrate con ese correo" hacia `/register?next=/invitacion/{token}`) y estado de error cuando el token no es válido.
+- **`app/s/[token]/page.jsx`:** retirada la vista v1.
 
 ## Verificación
-- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 04, nodos `29:981` y `29:1006`): columna lateral de 400 px, tarjetas con `p-5`, valores en `font-mono` 12/16.
+- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 05, nodo `30:877`): columna de 420 px, círculo de 44 px (`size-11`), ícono de 26 px, tarjeta con `p-6`.
 
 ## Grafo actualizado
-- **Cambiados:** `C-vaultdetail` (`app/vaults/[id]/page.jsx`) pasa a `hecho`.
+- **Creados:** `C-invitation` (`app/invitacion/[token]/page.jsx`, en curso).
+- **Cambiados:** `C-mock` (añade `lib/mock/audit.js`), `C-services` (añade `lib/services/invitations.js`), `C-authform` (soporte `?next=`).
 
 ## Dudas
 - Ninguna.
