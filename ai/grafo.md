@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-18)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-19)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -111,8 +111,9 @@ graph LR
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
-| C-css | `app/globals.css` | hecho | clases `.btn-*`, `.input`, `.badge` (v1) |
-| C-docker | `Dockerfile` | hecho | `npm ci`; `docker build` sin verificar (D-07) |
+| C-css | `app/globals.css` | hecho | estilos base de Tailwind y colores de fondo/texto |
+| C-docker | `Dockerfile` | hecho | `npm ci` y compilación multi-stage de Next.js |
+| C-readme | `README.md` | hecho | documentación del frontend v2, credenciales de prueba, rutas y arquitectura `lib/mock` + `lib/services` |
 
 ## Conceptos y externos
 | ID | Nombre | Estado | Notas |
@@ -148,3 +149,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-16: nuevo C-audit (`app/audit/page.jsx` v2) y amplía C-services (`lib/services/audit.js`) |
 | 2026-11-20 | Claude Code | T-17: nuevos C-sessionrow (`components/SessionRow.jsx`) y C-security (`app/security/page.jsx`); C-mock y C-services completan `sessions.js` y pasan a `hecho` |
 | 2026-11-20 | Claude Code | T-18: títulos `metadata.title` por ruta, mejoras de accesibilidad/estados vacíos; C-shell y C-api pasan a `obsoleto` |
+| 2026-11-20 | Claude Code | T-19: actualiza `README.md` (C-readme `hecho`), verifica compilación, reglas de seguridad y deja el resumen global en `ai/reporte.md` |
