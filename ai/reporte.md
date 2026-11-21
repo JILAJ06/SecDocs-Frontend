@@ -5,6 +5,7 @@
 
 **Tarea:** T-20 · Arreglos tras la revisión del PR #5
 **Rama:** `fix/02-vistas-v2`
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/6 (hacia `develop`)
 **Estado:** Completada
 **Fecha:** 2026-11-21
 
