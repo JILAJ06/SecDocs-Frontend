@@ -36,7 +36,8 @@ graph LR
 | D-06 | `ai/conocimiento/06-ramas-y-pull-requests.md` | hecho | → ramas y PR |
 | D-07 | `ai/conocimiento/07-decisiones.md` | hecho | → manda sobre los demás |
 | D-08 | `ai/conocimiento/08-grafo-de-conocimiento.md` | hecho | → define D-GRF |
-| D-SIG | `ai/siguiente.md` | en curso | → tarea actual (T-02) |
+| D-SIG | `ai/siguiente.md` | en curso | → apunta a D-PLAN |
+| D-PLAN | `ai/plan-vistas.md` | en curso | → plan completo T-03 ajuste a T-19; reemplaza el ciclo tarea por tarea |
 | D-REP | `ai/reporte.md` | en curso | → reporte de Code |
 | D-GRF | `ai/grafo.md` | en curso | este archivo |
 
@@ -47,7 +48,15 @@ graph LR
 | T-01 | `00-dependencias` | hecho | PR #2 → X-next, X-react |
 | T-02 | `00-componentes-base` | hecho | PR #3 → C-tw, C-ui, C-header |
 | T-03 | `01-autenticacion` | en curso | → S-01, S-02, C-session, C-services, K-mock |
-| T-04… | `02-mis-bovedas`… | planeado | → S-03… |
+| T-04 | `02-datos-y-servicios` | planeado | → C-mock, C-services (ver D-PLAN) |
+| T-05 | `03-mis-boveda-lista` | planeado | → S-03 |
+| T-06 | `04-modal-nueva-boveda` | planeado | → S-03 (modal 03b) |
+| T-07…T-10 | `05-detalle-encabezado`, `06-detalle-archivos`, `07-detalle-miembros`, `08-detalle-invitar-llaves` | planeado | → S-04 |
+| T-11…T-13 | `09-invitacion-login`, `10-invitacion-verificada`, `11-invitacion-denegada` | planeado | → S-05, S-06, S-07 |
+| T-14, T-15 | `12-boveda-compartida-contrasena`, `13-boveda-compartida-archivos` | planeado | → S-09, S-10, S-13 |
+| T-16 | `14-auditoria` | planeado | → S-11 |
+| T-17 | `15-seguridad` | planeado | → S-12 |
+| T-18, T-19 | `16-pulido-y-accesibilidad`, `17-cierre` | planeado | → todo el frontend |
 
 ## Pantallas v2 (Figma, sección "04 · Pantallas")
 | ID | Pantalla | Ruta | Figma | Estado | Relaciones |
@@ -107,3 +116,4 @@ graph LR
 | 2026-11-19 | Claude Chat | T-02 revisada y aprobada: pasa a `hecho` (PR #3) |
 | 2026-11-19 | Claude Chat | T-03 `en curso` (`01-autenticacion`): S-01, S-02 y K-mock `en curso`; tareas de pantallas renumeradas desde T-04 |
 | 2026-11-19 | Claude Code | T-03: C-authform pasa a v2 (`hecho`); nuevo C-session; C-mock y C-services `en curso` con rutas reales; C-layout envuelve con C-session |
+| 2026-11-20 | Claude Chat | Nuevo `ai/plan-vistas.md` (D-PLAN): tareas T-04 a T-19 `planeado`, Code las ejecuta de corrido sin revisión intermedia |

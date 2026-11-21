@@ -1,23 +1,14 @@
-# Tarea T-03 (ajuste) · Separación del texto de ayuda en Crear cuenta
+# Tarea actual · Plan completo de vistas (T-03 ajuste → T-19)
 
-**Rama:** `01-autenticacion` (la misma; el PR #4 sigue abierto)
-**Pull Request:** el mismo (#4). **No hagas merge.**
+**Rama de partida:** `01-autenticacion` (PR #4 abierto, no se ha mezclado)
 
-La revisión de T-03 está casi lista: solo hay **un cambio** por pedir. Lo demás queda aprobado.
+Ya no se trabaja tarea por tarea con revisión entre cada una. **Lee `ai/plan-vistas.md` completo y ejecuta todas las tareas en orden**, cada una en su propia rama (encadenadas, ver el plan) y con su propio Pull Request hacia `develop`. Primero el ajuste de T-03 (un commit en `01-autenticacion`), luego T-04 a T-19.
 
-## Qué cambiar
-- **Separación del texto "Mínimo 12 caracteres…" (tu D2):** en el Figma 02 (`6:52`) ese texto es hijo directo de la tarjeta, así que va a **16 px** (`gap-4`) del campo Contraseña, igual que todo lo demás. Mide en la captura: caja de contraseña termina y el texto empieza 16 px abajo. Quita el `div` envolvente con `gap-1` en `components/AuthForm.jsx` y deja el `Field` de contraseña y el `<p>` como hijos directos del formulario.
+Recuerda (también están en el plan y en `ai/conocimiento/`):
+- Commits sin prefijo, en español, pequeños. **Ninguna mención a Claude** en commits ni PR. Fechas reales: no modifiques fechas de commits.
+- No hagas merge ni commit directo a `main`/`develop`.
+- Pantallas solo con `lib/services`; sesión solo en memoria; sin storage ni cookies.
+- Actualiza los nodos de código del grafo en cada tarea y reescribe `ai/reporte.md` al terminar cada una; al final deja un resumen global.
+- Si algo no está en el plan, decide lo razonable, anótalo como duda y sigue.
 
-## Respuestas a tus dudas
-- **D1:** el mensaje `La contraseña debe tener entre 12 y 72 caracteres` está bien.
-- **D2:** 16 px (ver arriba).
-- **D3:** así está en el Figma (borde `color/border/default` = niebla sobre fondo niebla en la tarjeta). No se cambia.
-
-## Verificación
-- `npm run build` sin errores.
-- A 1440 px, en `/register`, mide la separación entre la caja de contraseña y el texto de ayuda: 16 px. Anótalo en el reporte.
-- `/login` no debe cambiar.
-
-## Entrega
-- Un commit pequeño, sin prefijo, en español, sin mención a Claude (revisa con `git log -1 --format=%B`).
-- `git push`. Reescribe `ai/reporte.md` completo (sigue siendo T-03; menciona el ajuste y la medida). Sin cambios de grafo: pon "sin cambios" en **Grafo actualizado**, con la razón.
+Al terminar, entrega la lista de PR (número y rama, en orden de merge) y las dudas abiertas.
