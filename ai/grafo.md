@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-17)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-18)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -102,10 +102,10 @@ graph LR
 | C-sessionrow | `components/SessionRow.jsx` | hecho | fila de sesión (`h-[60px]`, estado Activo/Revocado y acción Revocar) → usa C-ui (`StatusBadge`); lo usa C-security |
 | C-security | `app/security/page.jsx` | hecho | pantalla S-12 Seguridad de la cuenta (sesiones activas, kill-switch y cambio de contraseña) → usa C-header, C-sessionrow, C-modal, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
-| C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
+| C-shell | `components/Shell.jsx` | obsoleto | retirado en T-18 tras eliminar las vistas v1 |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
 | C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut`, `useSession()` y `useRequireSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout, C-authform, C-vaults, C-vaultdetail y C-invitation |
-| C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
+| C-api | `lib/api.js` | obsoleto | retirado en T-18 (ninguna vista lo importa) |
 | C-mock | `lib/mock/users.js`, `lib/mock/vaults.js`, `lib/mock/audit.js`, `lib/mock/sessions.js` | hecho | usuarios, bóvedas, archivos, miembros, invitaciones, bitácora y sesiones en memoria → K-mock; lo usa C-services |
 | C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js`, `lib/services/shared.js`, `lib/services/audit.js`, `lib/services/sessions.js` | hecho | servicios de sesión, bóvedas, invitaciones, compartidas, auditoría y seguridad (async, espera simulada 300–500 ms) → usa C-mock; lo usan C-session y las pantallas |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
@@ -147,3 +147,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-15: C-sharedvault incorpora la vista S-10 de archivos y pasa a `hecho`; nuevo C-sharedlist (`app/shared/page.jsx`) |
 | 2026-11-20 | Claude Code | T-16: nuevo C-audit (`app/audit/page.jsx` v2) y amplía C-services (`lib/services/audit.js`) |
 | 2026-11-20 | Claude Code | T-17: nuevos C-sessionrow (`components/SessionRow.jsx`) y C-security (`app/security/page.jsx`); C-mock y C-services completan `sessions.js` y pasan a `hecho` |
+| 2026-11-20 | Claude Code | T-18: títulos `metadata.title` por ruta, mejoras de accesibilidad/estados vacíos; C-shell y C-api pasan a `obsoleto` |
