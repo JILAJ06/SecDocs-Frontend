@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import AppHeader from '@/components/AppHeader';
 import Metrica from '@/components/Metrica';
+import NewVaultModal from '@/components/NewVaultModal';
 import { useRequireSession, useSession } from '@/components/SessionProvider';
 import { Alert, Button } from '@/components/ui';
 import VaultCard from '@/components/VaultCard';
@@ -17,6 +18,7 @@ export default function VaultsPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -43,6 +45,10 @@ export default function VaultsPage() {
     router.replace('/login');
   }
 
+  function handleCreated(newVault) {
+    setItems((prev) => [newVault, ...prev]);
+  }
+
   return (
     <div className="min-h-screen bg-niebla">
       <AppHeader active="vaults" email={session.email} onLogout={handleLogout} />
@@ -54,7 +60,9 @@ export default function VaultsPage() {
               Cada bóveda tiene su propia llave maestra (KEK). Si una bóveda expira, sus archivos se destruyen criptográficamente.
             </p>
           </div>
-          <Button variant="primary">+ Nueva bóveda</Button>
+          <Button variant="primary" onClick={() => setModalOpen(true)}>
+            + Nueva bóveda
+          </Button>
         </div>
 
         {error && (
@@ -99,6 +107,7 @@ export default function VaultsPage() {
               ))}
               <button
                 type="button"
+                onClick={() => setModalOpen(true)}
                 className="flex h-[214px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-salvia bg-transparent transition hover:bg-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia lg:w-[368px]"
               >
                 <span className="text-[32px] font-bold leading-8 tracking-[-0.5px] text-bosque">+</span>
@@ -109,6 +118,12 @@ export default function VaultsPage() {
           </>
         )}
       </main>
+
+      <NewVaultModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={handleCreated}
+      />
     </div>
   );
 }
