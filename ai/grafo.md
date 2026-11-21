@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-19)
+**Última actualización:** 2026-11-21 · Claude Code (al terminar T-20)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -49,7 +49,7 @@ graph LR
 | T-02 | `00-componentes-base` | hecho | PR #3 → C-tw, C-ui, C-header |
 | T-03 | `01-autenticacion` | hecho | PR #4 → S-01, S-02, C-session, C-services, K-mock |
 | T-04…T-19 | `02-vistas-v2` | hecho | PR #5 → S-03…S-13, C-mock, C-services (ver D-PLAN) |
-| T-20 | `fix/02-vistas-v2` | en curso | → C-services (token de invitación con `crypto.getRandomValues`); corrige nota de Docker en D-REP |
+| T-20 | `fix/02-vistas-v2` | hecho | → C-services (token de invitación con `crypto.getRandomValues`); corrige nota de Docker en D-REP |
 
 ## Pantallas v2 (Figma, sección "04 · Pantallas")
 | ID | Pantalla | Ruta | Figma | Estado | Relaciones |
@@ -144,3 +144,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-18: títulos `metadata.title` por ruta, mejoras de accesibilidad/estados vacíos; C-shell y C-api pasan a `obsoleto` |
 | 2026-11-20 | Claude Code | T-19: actualiza `README.md` (C-readme `hecho`), verifica compilación, reglas de seguridad y deja el resumen global en `ai/reporte.md` |
 | 2026-11-21 | Claude Chat | PR #5 revisado y mezclado: T-03 y T-04…T-19 `hecho`; T-20 `en curso` (`fix/02-vistas-v2`) |
+| 2026-11-21 | Claude Code | T-20: `generateMockToken` en `lib/services/vaults.js` usa `crypto.getRandomValues` con muestreo por rechazo; T-20 pasa a `hecho` |
