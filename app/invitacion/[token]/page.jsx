@@ -273,12 +273,62 @@ export default function InvitationPage() {
     );
   }
 
+  // Vista 07 · Acceso denegado (el correo de la sesión no coincide con el invitado; no revela el correo real)
   return (
     <div className="min-h-screen bg-niebla">
       <AppHeader active="shared" email={session.email} onLogout={handleLogout} />
       <main className="flex min-h-[calc(100vh-60px)] items-center justify-center px-4 py-8">
-        <div className="w-[480px] max-w-full rounded-2xl border border-niebla bg-white p-6 text-center">
-          <p className="text-sm text-bosque-soft">Acceso no permitido.</p>
+        <div className="flex w-[480px] max-w-full flex-col items-center gap-4 rounded-2xl border border-niebla bg-white p-6 text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-danger-bg text-danger-text">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 3 4 7v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V7l-8-4Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="m9.5 9.5 5 5m0-5-5 5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+
+          <h1 className="text-lg font-semibold leading-7 text-danger-text">
+            Acceso denegado
+          </h1>
+
+          <p className="text-sm leading-5 text-bosque-soft">
+            Esta invitación es para otra cuenta. Iniciaste sesión como {session.email}.
+          </p>
+
+          <div role="alert" className="w-full text-left">
+            <Alert kind="error">
+              No se envió ninguna contraseña. El intento quedó registrado en la bitácora del dueño de la bóveda.
+            </Alert>
+          </div>
+
+          <div className="flex w-full gap-2">
+            <Button
+              variant="secondary"
+              className="flex-1"
+              onClick={() => router.push('/vaults')}
+            >
+              Ir a mis bóvedas
+            </Button>
+            <Button
+              variant="primary"
+              className="flex-1"
+              onClick={async () => {
+                await signOut();
+              }}
+            >
+              Cambiar de cuenta
+            </Button>
+          </div>
         </div>
       </main>
     </div>
