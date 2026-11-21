@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-11)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-12)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -95,7 +95,7 @@ graph LR
 | C-filerow | `components/FileRow.jsx` | hecho | fila de archivo (`h-16`, variantes `owner` Destruir y `shared` Descargar) → usa C-ui (`Button`); lo usa C-vaultdetail |
 | C-memberrow | `components/MemberRow.jsx` | hecho | fila de miembro o invitación (`h-11`, confirmación inline) → usa C-ui (`StatusBadge`); lo usa C-vaultdetail |
 | C-vaultdetail | `app/vaults/[id]/page.jsx` | hecho | pantalla S-04 Detalle de bóveda completa (encabezado, archivos, miembros, invitar por correo y llaves) → usa C-header, C-card, C-filerow, C-memberrow, C-modal, C-session, C-services, C-ui |
-| C-invitation | `app/invitacion/[token]/page.jsx` | en curso | pantalla S-05 Invitación: iniciar sesión → usa C-session, C-services, C-ui, C-header |
+| C-invitation | `app/invitacion/[token]/page.jsx` | en curso | pantallas S-05 (iniciar sesión) y S-06 (identidad verificada con pasos y reenvío) → usa C-session, C-services, C-ui, C-header |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
@@ -136,3 +136,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-09: nuevo C-memberrow (`components/MemberRow.jsx`); C-vaultdetail incorpora la tabla de miembros e invitaciones |
 | 2026-11-20 | Claude Code | T-10: C-vaultdetail incorpora las tarjetas "Invitar por correo" y "Llaves de esta bóveda" y pasa a `hecho` |
 | 2026-11-20 | Claude Code | T-11: nuevo C-invitation (`app/invitacion/[token]/page.jsx`); amplía C-mock (`audit.js`), C-services (`invitations.js`) y C-authform (`?next=`); retira `app/s/[token]/page.jsx` |
+| 2026-11-20 | Claude Code | T-12: C-invitation incorpora la pantalla S-06 (Identidad verificada con pasos y cuenta regresiva de reenvío) |
