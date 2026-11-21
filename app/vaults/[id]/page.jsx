@@ -2,13 +2,21 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AppHeader from '@/components/AppHeader';
 import Card from '@/components/Card';
+import FileRow from '@/components/FileRow';
 import Modal from '@/components/Modal';
 import { useRequireSession, useSession } from '@/components/SessionProvider';
-import { Button, StatusBadge } from '@/components/ui';
-import { destroyVault, getVault, lockVault } from '@/lib/services/vaults';
+import { Alert, Button, StatusBadge } from '@/components/ui';
+import {
+  addFile,
+  destroyFile,
+  destroyVault,
+  getVault,
+  listFiles,
+  lockVault,
+} from '@/lib/services/vaults';
 
 const VAULT_STATUS_BADGE = {
   ACTIVE: 'ACTIVE_F',
@@ -21,20 +29,28 @@ export default function VaultDetailPage() {
   const session = useRequireSession();
   const { signOut } = useSession();
   const router = useRouter();
+  const fileInputRef = useRef(null);
 
   const [vault, setVault] = useState(null);
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [locking, setLocking] = useState(false);
   const [destroyModalOpen, setDestroyModalOpen] = useState(false);
   const [destroying, setDestroying] = useState(false);
 
-  const loadVault = useCallback(async () => {
+  const [dragging, setDragging] = useState(false);
+  const [fileError, setFileError] = useState('');
+  const [fileToDestroy, setFileToDestroy] = useState(null);
+  const [destroyingFile, setDestroyingFile] = useState(false);
+
+  const loadVaultData = useCallback(async () => {
     setLoading(true);
     setNotFound(false);
     try {
-      const v = await getVault(id);
+      const [v, f] = await Promise.all([getVault(id), listFiles(id)]);
       setVault(v);
+      setFiles(f);
     } catch {
       setNotFound(true);
     } finally {
@@ -43,8 +59,8 @@ export default function VaultDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    if (session) loadVault();
-  }, [session, loadVault]);
+    if (session) loadVaultData();
+  }, [session, loadVaultData]);
 
   if (!session) return null;
 
@@ -73,6 +89,50 @@ export default function VaultDetailPage() {
       router.replace('/vaults');
     } finally {
       setDestroying(false);
+    }
+  }
+
+  async function processFileUpload(file) {
+    if (!file || !vault) return;
+    setFileError('');
+    const tempId = `temp-${Date.now()}`;
+    const placeholder = {
+      id: tempId,
+      name: file.name,
+      uploading: true,
+    };
+    setFiles((prev) => [placeholder, ...prev]);
+    try {
+      const created = await addFile(vault.id, file);
+      setFiles((prev) => prev.map((f) => (f.id === tempId ? created : f)));
+      setVault((prev) => (prev ? { ...prev, filesCount: prev.filesCount + 1 } : prev));
+    } catch (err) {
+      setFiles((prev) => prev.filter((f) => f.id !== tempId));
+      setFileError(err.message || 'El archivo supera 25 MB');
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    setDragging(false);
+    const dropped = e.dataTransfer?.files?.[0];
+    if (dropped) processFileUpload(dropped);
+  }
+
+  async function handleConfirmDestroyFile() {
+    if (!fileToDestroy || !vault) return;
+    setDestroyingFile(true);
+    try {
+      await destroyFile(vault.id, fileToDestroy.id);
+      setFiles((prev) => prev.filter((f) => f.id !== fileToDestroy.id));
+      setVault((prev) =>
+        prev ? { ...prev, filesCount: Math.max(0, prev.filesCount - 1) } : prev
+      );
+      setFileToDestroy(null);
+    } finally {
+      setDestroyingFile(false);
     }
   }
 
@@ -133,16 +193,70 @@ export default function VaultDetailPage() {
             </div>
 
             <div className="flex flex-col items-start gap-6 lg:flex-row">
-              <div className="flex min-w-0 flex-1 flex-col gap-6 w-full">
+              <div className="flex w-full min-w-0 flex-1 flex-col gap-6">
                 <Card
                   title="Archivos"
                   subtitle="Se cifran en memoria y se guardan en Cloudflare R2 con nombre UUID."
-                />
+                  action={
+                    <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
+                      Subir y cifrar
+                    </Button>
+                  }
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) processFileUpload(f);
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragging(true);
+                    }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
+                    className={`flex w-full items-center justify-center rounded-xl border-2 border-dashed px-4 py-4 text-center text-sm leading-5 text-bosque-soft transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia ${
+                      dragging ? 'border-bosque bg-success-bg' : 'border-salvia hover:border-bosque'
+                    }`}
+                  >
+                    Arrastra un archivo aquí o selecciónalo · PDF, Office, imágenes, .env · máx. 25 MB
+                  </button>
+
+                  {fileError && (
+                    <div role="alert">
+                      <Alert kind="error">{fileError}</Alert>
+                    </div>
+                  )}
+
+                  {files.length === 0 ? (
+                    <p className="py-2 text-sm text-bosque-soft">Esta bóveda aún no tiene archivos</p>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {files.map((file) => (
+                        <FileRow
+                          key={file.id}
+                          file={file}
+                          variant="owner"
+                          onAction={(target) => setFileToDestroy(target)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </Card>
+
                 <Card
                   title="Miembros e invitaciones"
                   subtitle="Sólo el correo invitado puede aceptar. 5 contraseñas incorrectas bloquean al miembro."
                 />
               </div>
+
               <aside className="flex w-full shrink-0 flex-col gap-6 lg:w-[400px]">
                 <Card title="Invitar por correo" />
                 <Card title="Llaves de esta bóveda" />
@@ -171,6 +285,32 @@ export default function VaultDetailPage() {
                   onClick={handleDestroyVault}
                 >
                   Destruir bóveda
+                </Button>
+              </div>
+            </Modal>
+
+            <Modal
+              open={Boolean(fileToDestroy)}
+              onClose={() => !destroyingFile && setFileToDestroy(null)}
+              title={fileToDestroy ? `¿Destruir «${fileToDestroy.name}»?` : ''}
+            >
+              <p className="text-sm leading-5 text-bosque-soft">
+                Se elimina su llave (DEK) y no se podrá recuperar.
+              </p>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="secondary"
+                  disabled={destroyingFile}
+                  onClick={() => setFileToDestroy(null)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="danger"
+                  disabled={destroyingFile}
+                  onClick={handleConfirmDestroyFile}
+                >
+                  Destruir
                 </Button>
               </div>
             </Modal>
