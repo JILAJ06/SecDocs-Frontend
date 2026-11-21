@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-05)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-06)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -88,7 +88,9 @@ graph LR
 | C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; lo usa C-vaults |
 | C-metrica | `components/Metrica.jsx` | hecho | tarjeta de métrica con barra de progreso opcional → usa C-tw; lo usa C-vaults |
 | C-vaultcard | `components/VaultCard.jsx` | hecho | tarjeta de bóveda v2 (Activa, Bloqueada, Expirada) → usa C-ui (`Button`, `StatusBadge`); lo usa C-vaults |
-| C-vaults | `app/vaults/page.jsx` | en curso | pantalla S-03 Mis bóvedas (lista y métricas) → usa C-header, C-metrica, C-vaultcard, C-session, C-services, C-ui |
+| C-modal | `components/Modal.jsx` | hecho | modal genérico accesible (`role="dialog"`, Escape, velo, trampa de foco) → usa C-tw; lo usa C-newvaultmodal |
+| C-newvaultmodal | `components/NewVaultModal.jsx` | hecho | modal 03b Nueva bóveda → usa C-modal, C-ui (`Field`, `Select`, `Alert`, `Button`), C-services; lo usa C-vaults |
+| C-vaults | `app/vaults/page.jsx` | hecho | pantalla S-03 Mis bóvedas (+ modal 03b) → usa C-header, C-metrica, C-vaultcard, C-newvaultmodal, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
@@ -123,3 +125,4 @@ graph LR
 | 2026-11-20 | Claude Chat | Nuevo `ai/plan-vistas.md` (D-PLAN): tareas T-04 a T-19 `planeado`, Code las ejecuta de corrido sin revisión intermedia |
 | 2026-11-20 | Claude Code | T-04: amplía C-mock (`lib/mock/vaults.js` y `u-3` en `users.js`), C-services (`lib/services/vaults.js`) y C-session (`useRequireSession`) |
 | 2026-11-20 | Claude Code | T-05: nuevos C-metrica, C-vaultcard, C-vaults (`app/vaults/page.jsx`) y C-home (`app/page.jsx`); retira `app/dashboard/page.jsx` |
+| 2026-11-20 | Claude Code | T-06: nuevos C-modal (`components/Modal.jsx`) y C-newvaultmodal (`components/NewVaultModal.jsx`); C-vaults pasa a `hecho` |

@@ -3,24 +3,22 @@
 > Claude Code: reescribe **todo** este archivo al terminar cada tarea (no lo acumules).
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
-**Tarea:** T-05 · Mis bóvedas: lista
+**Tarea:** T-06 · Modal "Nueva bóveda"
 **Rama:** `02-vistas-v2`
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
 ## Qué hice
-- **`components/Metrica.jsx` (nuevo):** tarjeta de métrica (`rounded-2xl border border-niebla bg-white p-5 gap-1.5`) con etiqueta 12/16 mayúsculas, valor 24/32 bold, barra de progreso opcional y detalle 12/16 `text-bosque-muted`.
-- **`components/VaultCard.jsx` (nuevo):** tarjeta de bóveda (`rounded-2xl border border-salvia bg-white p-5 gap-4 lg:w-[368px]`) con ícono de cofre/candado en contenedor `size-10 rounded-xl bg-niebla`, nombre 16/24 semibold, subtítulo según estado, `StatusBadge` (`ACTIVE_F`, `LOCKED_F`, `EXPIRED_F`), 3 píldoras de datos (singular "1 miembro" / "1 archivo"), botón secundario a ancho completo ("Abrir bóveda", "Revisar", "Ver bitácora") y `opacity-65` cuando está expirada.
-- **`app/vaults/page.jsx` (nuevo):** vista 03 Mis bóvedas con `useRequireSession()`, `AppHeader active="vaults"`, fila de título y botón "+ Nueva bóveda", fila de 4 métricas, rejilla de 5 bóvedas + sexta tarjeta punteada "Nueva bóveda" (`h-[214px] border-2 border-dashed border-salvia`).
-- **`app/page.jsx`:** redirige `/` a `/vaults` si hay sesión o a `/login` si no hay.
-- **`app/dashboard/page.jsx`:** eliminado según pide T-05.
+- **`components/Modal.jsx` (nuevo):** modal genérico accesible con velo `bg-bosque/35`, panel `w-[480px] rounded-2xl bg-white p-6 gap-4 shadow-[0_16px_48px_0_rgba(0,38,26,0.25)]`, `role="dialog" aria-modal="true" aria-labelledby`, bloqueo de scroll del body, cierre con Escape y clic en el velo, trampa de foco y restauración del foco al cerrar.
+- **`components/NewVaultModal.jsx` (nuevo):** formulario de creación de bóveda con textos exactos del Figma (`29:644`), `Field` "Nombre de la bóveda", `Select` "La bóveda expira en" (7, 15, 30, 60, 90 días), `Alert kind="ok"` de KEK exclusiva, validación de nombre vacío ("El nombre es obligatorio") y llamada a `createVault`.
+- **`app/vaults/page.jsx`:** conecté el botón "+ Nueva bóveda" y la tarjeta punteada con `NewVaultModal`; al crear una bóveda se inserta al inicio de la lista.
 
 ## Verificación
-- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 03, nodo `29:474`): contenedor `max-w-[1152px]`, 4 métricas `flex-1 gap-4`, tarjetas `w-[368px]` (3 por fila en 1152 px con `gap-6`), tarjeta punteada `214 px` de alto.
+- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 03b, nodo `29:644`): modal de 480 px, padding 24 px (`p-6`), `gap-4`, velo 35 % bosque.
 
 ## Grafo actualizado
-- **Creados:** `C-metrica` (`components/Metrica.jsx`), `C-vaultcard` (`components/VaultCard.jsx`), `C-vaults` (`app/vaults/page.jsx`), `C-home` (`app/page.jsx`).
-- **Cambiados:** `C-ui` y `C-header` (usados por las nuevas vistas).
+- **Creados:** `C-modal` (`components/Modal.jsx`), `C-newvaultmodal` (`components/NewVaultModal.jsx`).
+- **Cambiados:** `C-vaults` pasa a `hecho`.
 
 ## Dudas
 - Ninguna.
