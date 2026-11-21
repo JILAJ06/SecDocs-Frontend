@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-14)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-15)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -96,7 +96,8 @@ graph LR
 | C-memberrow | `components/MemberRow.jsx` | hecho | fila de miembro o invitación (`h-11`, confirmación inline) → usa C-ui (`StatusBadge`); lo usa C-vaultdetail |
 | C-vaultdetail | `app/vaults/[id]/page.jsx` | hecho | pantalla S-04 Detalle de bóveda completa (encabezado, archivos, miembros, invitar por correo y llaves) → usa C-header, C-card, C-filerow, C-memberrow, C-modal, C-session, C-services, C-ui |
 | C-invitation | `app/invitacion/[token]/page.jsx` | hecho | pantallas S-05 (iniciar sesión), S-06 (identidad verificada) y S-07 (acceso denegado) → usa C-session, C-services, C-ui, C-header |
-| C-sharedvault | `app/shared/[id]/page.jsx` | en curso | pantalla S-09 Bóveda compartida: ingresar contraseña con backoff exponencial → usa C-header, C-session, C-services, C-ui |
+| C-sharedvault | `app/shared/[id]/page.jsx` | hecho | pantallas S-09 (ingresar contraseña con backoff) y S-10 (archivos con descarga simulada y salir de bóveda) → usa C-header, C-filerow, C-session, C-services, C-ui |
+| C-sharedlist | `app/shared/page.jsx` | hecho | pantalla S-13 Compartidas conmigo (lista de bóvedas aceptadas o marcador "Próximamente") → usa C-header, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
@@ -140,3 +141,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-12: C-invitation incorpora la pantalla S-06 (Identidad verificada con pasos y cuenta regresiva de reenvío) |
 | 2026-11-20 | Claude Code | T-13: C-invitation incorpora la pantalla S-07 (Acceso denegado) y pasa a `hecho` |
 | 2026-11-20 | Claude Code | T-14: nuevo C-sharedvault (`app/shared/[id]/page.jsx`) y amplía C-services (`lib/services/shared.js`) |
+| 2026-11-20 | Claude Code | T-15: C-sharedvault incorpora la vista S-10 de archivos y pasa a `hecho`; nuevo C-sharedlist (`app/shared/page.jsx`) |

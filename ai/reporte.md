@@ -3,25 +3,26 @@
 > Claude Code: reescribe **todo** este archivo al terminar cada tarea (no lo acumules).
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
-**Tarea:** T-14 · Bóveda compartida: contraseña
+**Tarea:** T-15 · Bóveda compartida: archivos y lista
 **Rama:** `02-vistas-v2`
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
 ## Qué hice
-- **`lib/services/shared.js` (nuevo):**
-  - `getSharedVault(id, email)`: verifica membresía `ACCEPTED` (o estado de bloqueo durante la sesión), devuelve metadatos de la bóveda, archivos y estado de desbloqueo en memoria.
-  - `unlockVault(id, email, password)`: valida contra `BOVEDA_DEMO_PASSWORD`. Si falla, aplica espera exponencial de 1, 2, 4 y 8 segundos (intentos 1 a 4, actualizando `TEMP_LOCK` en el miembro y registrando en la bitácora "Contraseña de bóveda incorrecta" con detalle `intento n/5 · espera s s`). Al 5.º intento fallido bloquea al miembro (`LOCKED`) con el mensaje "Acceso bloqueado. Se avisó al dueño de la bóveda." Si acierta, reinicia contadores y registra "Acceso a bóveda concedido".
-  - `downloadSharedFile(id, email, file)` y `leaveVault(id, email)`.
-- **`app/shared/[id]/page.jsx` (nuevo):**
-  - Pantalla 09 (`30:1036`, columna de 448 px, `AppHeader active="shared"`) con cabecera de círculo 56×56 (`size-14 rounded-full bg-success-bg`) e ícono de candado de 26 px, `Field mono type="password"` "Contraseña de la bóveda", `Alert kind="warn"` (o `error` al quinto fallo), botón primario con cuenta regresiva en vivo ("Espera {s} s…", `aria-live="polite"`) y pie 12/16 `text-bosque-muted`.
+- **`app/shared/[id]/page.jsx`:**
+  - Una vez desbloqueada la bóveda en memoria, muestra la vista 10 (`30:1081`, contenedor `max-w-[960px]`, `gap-5`, `AppHeader active="shared"`).
+  - Migas "Compartidas conmigo / {nombre}", título 24/32 semibold con `StatusBadge` `ACTIVE_F`, subtítulo "Compartida por Alexander J. · tu acceso vence el 30/11/26" y botón secundario "Salir de la bóveda" (`leaveVault` → `/shared`).
+  - `Alert kind="ok"` con el mensaje de descifrado al vuelo y lista de `FileRow variant="shared"` (`gap-2.5`) cuya línea meta incluye ` por Alexander J.` y botón secundario "Descargar".
+  - Al pulsar "Descargar" se llama a `downloadSharedFile`, se muestra `Alert kind="ok"` "Descarga registrada" durante 2 s y se agrega "Archivo descargado" a la bitácora de auditoría.
+- **`app/shared/page.jsx` (nuevo):**
+  - Vista `/shared` ("Compartidas conmigo") con `AppHeader active="shared"`, tarjetas de las bóvedas con membresía `ACCEPTED` para el correo en sesión (nombre, "Compartida por Alexander J." y botón "Abrir" → `/shared/{id}`) y, cuando no hay bóvedas compartidas, el marcador "Próximamente: aquí verás todas las bóvedas que compartieron contigo."
 
 ## Verificación
-- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 09, nodo `30:1036`): columna de 448 px, círculo de 56 px, campo monoespaciado, esperas 1 / 2 / 4 / 8 s y bloqueo al 5.º intento.
+- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 10, nodo `30:1081`): contenedor de 960 px, filas de 64 px con separación de 10 px (`gap-2.5`).
 
 ## Grafo actualizado
-- **Creados:** `C-sharedvault` (`app/shared/[id]/page.jsx`, en curso).
-- **Cambiados:** `C-services` (añade `lib/services/shared.js`).
+- **Creados:** `C-sharedlist` (`app/shared/page.jsx`, `hecho`).
+- **Cambiados:** `C-sharedvault` (`app/shared/[id]/page.jsx`) pasa a `hecho`.
 
 ## Dudas
 - Ninguna.
