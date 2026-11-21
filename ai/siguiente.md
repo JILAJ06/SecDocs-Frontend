@@ -12,3 +12,5 @@ Recuerda (también están en el plan y en `ai/conocimiento/`):
 - Si algo no está en el plan, decide lo razonable, anótalo como duda y sigue.
 
 Al terminar, entrega la lista de PR (número y rama, en orden de merge) y las dudas abiertas.
+
+**Cambio de ramas:** una sola rama `02-vistas-v2` (desde `01-autenticacion`, después del ajuste de T-03) y un solo PR. Lee `ai/respuestas-para-code.md`: responde tus preguntas y manda sobre lo que diga el plan acerca de ramas encadenadas. Fechas de commits: siempre las reales.
