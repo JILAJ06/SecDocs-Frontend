@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Code (nodos de código al terminar T-03)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-04)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -88,10 +88,10 @@ graph LR
 | C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; sin estado ni sesión |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
-| C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut` y `useSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout y C-authform |
+| C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut`, `useSession()` y `useRequireSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout y C-authform |
 | C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
-| C-mock | `lib/mock/users.js` | en curso | usuarios de ejemplo, `DEMO_PASSWORD` falsa y contraseñas de cuentas nuevas en memoria → K-mock; lo usa C-services |
-| C-services | `lib/services/auth.js` | en curso | `login`, `register`, `logout` (async, espera simulada 300–500 ms) → usa C-mock; lo usa C-session |
+| C-mock | `lib/mock/users.js`, `lib/mock/vaults.js` | en curso | usuarios de ejemplo (`u-1`..`u-3`), `DEMO_PASSWORD`, `BOVEDA_DEMO_PASSWORD`, bóvedas (`v-1`..`v-5`), archivos, miembros e invitaciones en memoria → K-mock; lo usa C-services |
+| C-services | `lib/services/auth.js`, `lib/services/vaults.js` | en curso | servicios de sesión y bóvedas/archivos/miembros/invitaciones (async, espera simulada 300–500 ms) → usa C-mock; lo usa C-session |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
@@ -117,3 +117,4 @@ graph LR
 | 2026-11-19 | Claude Chat | T-03 `en curso` (`01-autenticacion`): S-01, S-02 y K-mock `en curso`; tareas de pantallas renumeradas desde T-04 |
 | 2026-11-19 | Claude Code | T-03: C-authform pasa a v2 (`hecho`); nuevo C-session; C-mock y C-services `en curso` con rutas reales; C-layout envuelve con C-session |
 | 2026-11-20 | Claude Chat | Nuevo `ai/plan-vistas.md` (D-PLAN): tareas T-04 a T-19 `planeado`, Code las ejecuta de corrido sin revisión intermedia |
+| 2026-11-20 | Claude Code | T-04: amplía C-mock (`lib/mock/vaults.js` y `u-3` en `users.js`), C-services (`lib/services/vaults.js`) y C-session (`useRequireSession`) |
