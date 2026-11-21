@@ -66,17 +66,15 @@ export default function AuthForm({ mode }) {
             label="Correo" type="email" required autoComplete="email"
             value={email} onChange={(e) => setEmail(e.target.value)}
           />
-          <div className="flex flex-col gap-1">
-            <Field
-              label="Contraseña" type="password" required maxLength={72}
-              minLength={isLogin ? undefined : 12}
-              autoComplete={isLogin ? 'current-password' : 'new-password'}
-              value={password} onChange={(e) => setPassword(e.target.value)}
-            />
-            {!isLogin && (
-              <p className="text-xs leading-4 text-bosque-muted">Mínimo 12 caracteres. Se guarda con bcrypt (costo 12).</p>
-            )}
-          </div>
+          <Field
+            label="Contraseña" type="password" required maxLength={72}
+            minLength={isLogin ? undefined : 12}
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            value={password} onChange={(e) => setPassword(e.target.value)}
+          />
+          {!isLogin && (
+            <p className="text-xs leading-4 text-bosque-muted">Mínimo 12 caracteres. Se guarda con bcrypt (costo 12).</p>
+          )}
           {error && (
             <div role="alert">
               <Alert kind="error">{error}</Alert>
