@@ -3,7 +3,7 @@
 //   Verde bosque #00412E · Salvia #96BF8A · Niebla #E8EAE5 · Blanco #FFFFFF
 // Los colores de alerta (danger/warning/info) se conservan porque la paleta no trae rojo ni ámbar.
 module.exports = {
-  content: ['./app/**/*.{js,jsx}', './components/**/*.{js,jsx}'],
+  content: ['./app/**/*.{js,jsx}', './components/**/*.{js,jsx}', './lib/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {

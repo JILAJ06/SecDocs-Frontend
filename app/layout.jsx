@@ -1,4 +1,5 @@
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { AuthProvider } from '@/components/AuthProvider';
 import './globals.css';
 
 // Next.js descarga las fuentes al compilar y las sirve desde el propio dominio (cumple la CSP 'self').
@@ -17,7 +18,9 @@ export const viewport = { themeColor: '#00412E' };
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${inter.variable} ${mono.variable}`}>
-      <body className="min-h-screen font-sans">{children}</body>
+      <body className="min-h-screen font-sans">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

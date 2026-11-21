@@ -1,7 +1,7 @@
 // La web y la API se sirven bajo el MISMO origen: /api/* se reenvía al backend.
 // Así la cookie de sesión es de primera parte (SameSite=Strict funciona) y no hace falta CORS.
-// En producción (Vercel → Railway) basta con cambiar API_INTERNAL_URL.
-const API = process.env.API_INTERNAL_URL || 'http://localhost:4000';
+// En producción (Vercel → Railway) basta con cambiar API_PROXY_TARGET (se fija en tiempo de build).
+const API = process.env.API_PROXY_TARGET || 'http://localhost:4000';
 const isDev = process.env.NODE_ENV !== 'production';
 
 const csp = [
@@ -24,7 +24,7 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   async rewrites() {
-    return [{ source: '/api/:path*', destination: `${API}/api/:path*` }];
+    return [{ source: '/api/v1/:path*', destination: `${API}/api/v1/:path*` }];
   },
   async headers() {
     const common = [
@@ -37,8 +37,8 @@ const nextConfig = {
     ];
     return [
       { source: '/:path*', headers: common },
-      // La página del receptor contiene el token en la URL: nunca se cachea.
-      { source: '/s/:token*', headers: [{ key: 'Cache-Control', value: 'no-store, max-age=0' }] },
+      // La página de invitación contiene el token en la URL: nunca se cachea.
+      { source: '/invitacion/:token*', headers: [{ key: 'Cache-Control', value: 'no-store, max-age=0' }] },
     ];
   },
 };

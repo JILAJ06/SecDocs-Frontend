@@ -1,4 +1,4 @@
-# SecDocs · Frontend
+﻿# SecDocs · Frontend
 
 Interfaz web de **SecDocs**, bóveda digital para guardar y compartir documentos confidenciales.
 Proyecto de Seguridad Informática, Universidad Politécnica de Chiapas.
@@ -21,7 +21,7 @@ public/       archivos estáticos
 
 ## Configuración
 La web y la API se sirven bajo el mismo origen: `/api/*` se reenvía al backend con una *rewrite* de Next.js.
-La URL del backend se define con la variable `API_INTERNAL_URL` (por defecto `http://localhost:4000`).
+La URL del backend se define con la variable `API_PROXY_TARGET` (por defecto `http://localhost:4000`).
 
 ## Desarrollo
 ```bash

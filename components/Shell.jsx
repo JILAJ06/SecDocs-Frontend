@@ -2,47 +2,45 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { useEffect } from 'react';
+import { useAuth } from './AuthProvider';
 import { Brand } from './ui';
 
-/** Marco de las páginas privadas: verifica la sesión y muestra la navegación. */
+const NAV = [
+  ['/vaults', 'Bóvedas'],
+  ['/shared', 'Compartidas conmigo'],
+  ['/audit', 'Auditoría'],
+  ['/security', 'Seguridad'],
+];
+
+/** Marco de las páginas privadas: protege la ruta y muestra la navegación de 4 pestañas. */
 export default function Shell({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState(null);
+  const { user, loading, sessionEnded, logout } = useAuth();
 
   useEffect(() => {
-    api.get('/auth/me')
-      .then((r) => setUser(r.data.user))
-      .catch(() => router.replace('/login'));
-  }, [router]);
+    if (loading || user) return;
+    const target = sessionEnded ? '/login' : `/login?redirect=${encodeURIComponent(pathname)}`;
+    router.replace(target);
+  }, [loading, user, sessionEnded, pathname, router]);
 
-  async function logout() {
-    await api.post('/auth/logout').catch(() => {});
-    router.replace('/login');
-  }
-
-  if (!user) {
+  if (loading || !user) {
     return <div className="flex min-h-screen items-center justify-center text-bosque-muted">Verificando sesión…</div>;
   }
 
-  const nav = [
-    ['/dashboard', 'Bóveda'],
-    ['/audit', 'Auditoría'],
-  ];
-
   return (
     <div className="min-h-screen">
-      <header className="border-b border-niebla bg-white backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <div className="flex items-center gap-6">
+      <header className="border-b border-niebla bg-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-6">
             <Brand small />
-            <nav className="flex gap-1">
-              {nav.map(([href, label]) => (
+            <nav className="flex flex-wrap gap-1" aria-label="Principal">
+              {NAV.map(([href, label]) => (
                 <Link
-                  key={href} href={href}
-                  className={`rounded-lg px-3 py-1.5 text-sm ${pathname === href ? 'bg-niebla text-bosque' : 'text-bosque-soft hover:text-bosque'}`}
+                  key={href}
+                  href={href}
+                  className={`rounded-lg px-3 py-1.5 text-sm ${pathname === href || pathname.startsWith(`${href}/`) ? 'bg-niebla text-bosque' : 'text-bosque-soft hover:text-bosque'}`}
                 >
                   {label}
                 </Link>
@@ -51,7 +49,9 @@ export default function Shell({ children }) {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden text-bosque-soft sm:inline">{user.email}</span>
-            <button onClick={logout} className="btn-ghost py-1.5">Salir</button>
+            <button onClick={logout} className="btn-ghost py-1.5">
+              Salir
+            </button>
           </div>
         </div>
       </header>

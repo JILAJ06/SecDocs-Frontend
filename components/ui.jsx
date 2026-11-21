@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { FILE_STATUS, KEK_STATUS, MEMBER_STATUS, VAULT_STATUS, effectiveVaultStatus } from '@/lib/constants';
 
 export function Brand({ small = false }) {
   return (
@@ -17,19 +18,15 @@ export function Brand({ small = false }) {
   );
 }
 
-const STATUS = {
-  ACTIVE: ['Activo', 'bg-success-bg text-success-text ring-1 ring-success-border'],
-  CONSUMED: ['Consumido', 'bg-info-bg text-info-text ring-1 ring-info-border'],
-  EXPIRED: ['Expirado', 'bg-niebla text-bosque-soft ring-1 ring-salvia'],
-  REVOKED: ['Revocado', 'bg-warning-bg text-warning-text ring-1 ring-warning-border'],
-  LOCKED: ['Bloqueado', 'bg-danger-bg text-danger-text ring-1 ring-danger-border'],
-  PURGED: ['Destruido', 'bg-niebla text-bosque-soft ring-1 ring-salvia'],
-};
-
-export function StatusBadge({ status }) {
-  const [label, cls] = STATUS[status] || [status, 'bg-niebla text-bosque-soft'];
+function Badge({ map, status }) {
+  const { label, cls } = map[status] || { label: status, cls: 'bg-niebla text-bosque-soft' };
   return <span className={`badge ${cls}`}>{label}</span>;
 }
+
+export const VaultBadge = ({ vault, status }) => <Badge map={VAULT_STATUS} status={status || effectiveVaultStatus(vault)} />;
+export const MemberBadge = ({ status }) => <Badge map={MEMBER_STATUS} status={status} />;
+export const FileBadge = ({ status }) => <Badge map={FILE_STATUS} status={status} />;
+export const KekBadge = ({ status }) => <Badge map={KEK_STATUS} status={status} />;
 
 export function CopyField({ label, value, mono = true }) {
   const [copied, setCopied] = useState(false);
@@ -63,5 +60,41 @@ export function Alert({ kind = 'error', children }) {
     ok: 'border-success-border bg-success-bg text-success-text',
     info: 'border-salvia bg-white text-bosque-soft',
   }[kind];
-  return <div className={`rounded-lg border px-3 py-2 text-sm ${cls}`}>{children}</div>;
+  return (
+    <div role={kind === 'error' ? 'alert' : 'status'} className={`rounded-lg border px-3 py-2 text-sm ${cls}`}>
+      {children}
+    </div>
+  );
+}
+
+/** Modal accesible mínimo. */
+export function Modal({ title, children, onClose, closeLabel = 'Cerrar' }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" role="dialog" aria-modal="true" aria-label={title}>
+      <div className="card max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto">
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          {onClose && (
+            <button type="button" onClick={onClose} className="text-sm text-bosque-soft hover:text-bosque" aria-label={closeLabel}>
+              ✕
+            </button>
+          )}
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function Spinner({ text = 'Cargando…' }) {
+  return <div className="card text-sm text-bosque-muted">{text}</div>;
+}
+
+export function Stat({ label, value }) {
+  return (
+    <div className="card">
+      <p className="text-xs font-medium uppercase tracking-wide text-bosque-soft">{label}</p>
+      <p className="mt-1 text-2xl font-semibold">{value}</p>
+    </div>
+  );
 }

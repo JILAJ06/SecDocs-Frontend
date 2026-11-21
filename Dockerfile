@@ -6,8 +6,8 @@ RUN npm install --no-audit --no-fund
 FROM node:22-alpine AS build
 WORKDIR /app
 # Las rewrites de Next.js se fijan en tiempo de build
-ARG API_INTERNAL_URL=http://api:4000
-ENV API_INTERNAL_URL=$API_INTERNAL_URL NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production
+ARG API_PROXY_TARGET=http://api:4000
+ENV API_PROXY_TARGET=$API_PROXY_TARGET NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
