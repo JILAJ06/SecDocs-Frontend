@@ -3,22 +3,24 @@
 > Claude Code: reescribe **todo** este archivo al terminar cada tarea (no lo acumules).
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
-**Tarea:** T-06 · Modal "Nueva bóveda"
+**Tarea:** T-07 · Detalle: encabezado y acciones
 **Rama:** `02-vistas-v2`
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
 ## Qué hice
-- **`components/Modal.jsx` (nuevo):** modal genérico accesible con velo `bg-bosque/35`, panel `w-[480px] rounded-2xl bg-white p-6 gap-4 shadow-[0_16px_48px_0_rgba(0,38,26,0.25)]`, `role="dialog" aria-modal="true" aria-labelledby`, bloqueo de scroll del body, cierre con Escape y clic en el velo, trampa de foco y restauración del foco al cerrar.
-- **`components/NewVaultModal.jsx` (nuevo):** formulario de creación de bóveda con textos exactos del Figma (`29:644`), `Field` "Nombre de la bóveda", `Select` "La bóveda expira en" (7, 15, 30, 60, 90 días), `Alert kind="ok"` de KEK exclusiva, validación de nombre vacío ("El nombre es obligatorio") y llamada a `createVault`.
-- **`app/vaults/page.jsx`:** conecté el botón "+ Nueva bóveda" y la tarjeta punteada con `NewVaultModal`; al crear una bóveda se inserta al inicio de la lista.
+- **`components/Card.jsx` (nuevo):** contenedor de tarjeta blanca (`rounded-2xl border border-niebla bg-white p-5`) con encabezado (`title` 18/28 semibold, `subtitle` 12/16 `text-bosque-soft` y `action` a la derecha).
+- **`app/vaults/[id]/page.jsx` (nuevo):**
+  - Carga de bóveda con `getVault(id)` y pantalla de "Bóveda no encontrada" con enlace "Volver a mis bóvedas".
+  - Migas de pan "Mis bóvedas / {nombre}", título 24/32 semibold con `StatusBadge`, línea de metadatos ("Expira 30/11/26 · KEK v1 · 4 archivos · 12.4 MB · 3 miembros").
+  - Botón secundario "Bloquear bóveda" (llama a `lockVault` y pasa a deshabilitado "Bloqueada") y botón peligro "Destruir bóveda" con modal de confirmación "¿Destruir «{nombre}»?" que llama a `destroyVault` y redirige a `/vaults`.
+  - Estructura de dos columnas (`Principal` flexible y `Lateral` de `400 px`).
 
 ## Verificación
-- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 03b, nodo `29:644`): modal de 480 px, padding 24 px (`p-6`), `gap-4`, velo 35 % bosque.
+- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 04, nodo `29:835`).
 
 ## Grafo actualizado
-- **Creados:** `C-modal` (`components/Modal.jsx`), `C-newvaultmodal` (`components/NewVaultModal.jsx`).
-- **Cambiados:** `C-vaults` pasa a `hecho`.
+- **Creados:** `C-card` (`components/Card.jsx`), `C-vaultdetail` (`app/vaults/[id]/page.jsx`, en curso).
 
 ## Dudas
 - Ninguna.

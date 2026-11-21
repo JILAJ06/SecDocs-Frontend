@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-06)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-07)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -91,6 +91,8 @@ graph LR
 | C-modal | `components/Modal.jsx` | hecho | modal genérico accesible (`role="dialog"`, Escape, velo, trampa de foco) → usa C-tw; lo usa C-newvaultmodal |
 | C-newvaultmodal | `components/NewVaultModal.jsx` | hecho | modal 03b Nueva bóveda → usa C-modal, C-ui (`Field`, `Select`, `Alert`, `Button`), C-services; lo usa C-vaults |
 | C-vaults | `app/vaults/page.jsx` | hecho | pantalla S-03 Mis bóvedas (+ modal 03b) → usa C-header, C-metrica, C-vaultcard, C-newvaultmodal, C-session, C-services, C-ui |
+| C-card | `components/Card.jsx` | hecho | tarjeta base de columnas de detalle (título, subtítulo, acción) → usa C-tw; lo usa C-vaultdetail |
+| C-vaultdetail | `app/vaults/[id]/page.jsx` | en curso | pantalla S-04 Detalle de bóveda (encabezado, migas y acciones Bloquear/Destruir) → usa C-header, C-card, C-modal, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
@@ -126,3 +128,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-04: amplía C-mock (`lib/mock/vaults.js` y `u-3` en `users.js`), C-services (`lib/services/vaults.js`) y C-session (`useRequireSession`) |
 | 2026-11-20 | Claude Code | T-05: nuevos C-metrica, C-vaultcard, C-vaults (`app/vaults/page.jsx`) y C-home (`app/page.jsx`); retira `app/dashboard/page.jsx` |
 | 2026-11-20 | Claude Code | T-06: nuevos C-modal (`components/Modal.jsx`) y C-newvaultmodal (`components/NewVaultModal.jsx`); C-vaults pasa a `hecho` |
+| 2026-11-20 | Claude Code | T-07: nuevos C-card (`components/Card.jsx`) y C-vaultdetail (`app/vaults/[id]/page.jsx`) |
