@@ -2,11 +2,15 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppHeader from '@/components/AppHeader';
 import { useSession } from '@/components/SessionProvider';
 import { Alert, Brand, Button, Field } from '@/components/ui';
-import { getInvitation } from '@/lib/services/invitations';
+import {
+  acceptInvitation,
+  getInvitation,
+  sendVaultPassword,
+} from '@/lib/services/invitations';
 
 export default function InvitationPage() {
   const { token } = useParams();
@@ -21,6 +25,9 @@ export default function InvitationPage() {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  const [cooldown, setCooldown] = useState(0);
+  const processedSessionKey = useRef('');
 
   useEffect(() => {
     let active = true;
@@ -41,6 +48,26 @@ export default function InvitationPage() {
     };
   }, [token]);
 
+  const emailMatches =
+    Boolean(session && invitation) &&
+    session.email.trim().toLowerCase() === invitation.inviteEmail.trim().toLowerCase();
+
+  useEffect(() => {
+    if (!session || !invitation) return;
+    const key = `${token}:${session.email.toLowerCase()}`;
+    if (processedSessionKey.current === key) return;
+    processedSessionKey.current = key;
+    acceptInvitation(token, session.email).catch(() => {});
+  }, [session, invitation, token]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return undefined;
+    const timer = setInterval(() => {
+      setCooldown((prev) => (prev > 1 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   async function handleLogin(e) {
     e.preventDefault();
     setLoginError('');
@@ -57,6 +84,16 @@ export default function InvitationPage() {
   async function handleLogout() {
     await signOut();
     router.replace('/login');
+  }
+
+  async function handleResend() {
+    if (cooldown > 0) return;
+    setCooldown(60);
+    try {
+      await sendVaultPassword(token);
+    } catch {
+      /* el contador sigue su curso */
+    }
   }
 
   if (loading) {
@@ -156,12 +193,92 @@ export default function InvitationPage() {
     );
   }
 
+  // Vista 06 · Identidad verificada (el correo de la sesión coincide con la invitación)
+  if (emailMatches) {
+    return (
+      <div className="min-h-screen bg-niebla">
+        <AppHeader active="shared" email={session.email} onLogout={handleLogout} />
+        <main className="flex min-h-[calc(100vh-60px)] items-center justify-center px-4 py-8">
+          <div className="flex w-[480px] max-w-full flex-col items-center gap-4 rounded-2xl border border-niebla bg-white p-6 text-center">
+            <div className="flex size-14 items-center justify-center rounded-full bg-success-bg text-bosque">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="m5 13 4 4L19 7"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h1 className="text-lg font-semibold leading-7 text-bosque">
+              Identidad verificada
+            </h1>
+
+            <p className="text-sm leading-5 text-bosque-soft">
+              Enviamos la contraseña de «{invitation.vaultName}» a {session.email}. Llega por un canal distinto al enlace que recibiste.
+            </p>
+
+            <div className="flex w-full flex-col gap-2.5 rounded-xl bg-niebla p-4 text-left text-sm leading-5 text-bosque">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-bosque text-xs font-semibold text-white">
+                  ✓
+                </span>
+                <span>Enlace de invitación recibido (canal 1)</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-bosque text-xs font-semibold text-white">
+                  ✓
+                </span>
+                <span>Sesión iniciada como {session.email}</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-bosque text-xs font-semibold text-white">
+                  ✓
+                </span>
+                <span>El correo coincide con la invitación</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-salvia text-xs font-semibold text-bosque">
+                  →
+                </span>
+                <span className="font-semibold">Contraseña enviada por correo (canal 2)</span>
+              </div>
+            </div>
+
+            <Button
+              variant="primary"
+              className="w-full"
+              onClick={() => router.push(`/shared/${invitation.vaultId}`)}
+            >
+              Ingresar contraseña de la bóveda
+            </Button>
+
+            <p className="text-xs leading-4 text-bosque-muted">
+              ¿No llegó? Revisa spam o{' '}
+              <button
+                type="button"
+                disabled={cooldown > 0}
+                onClick={handleResend}
+                className="font-medium underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia disabled:cursor-not-allowed disabled:no-underline"
+              >
+                {cooldown > 0 ? `reenvía en ${cooldown} s` : 'reenvía en 60 s'}
+              </button>
+              .
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-niebla">
       <AppHeader active="shared" email={session.email} onLogout={handleLogout} />
       <main className="flex min-h-[calc(100vh-60px)] items-center justify-center px-4 py-8">
         <div className="w-[480px] max-w-full rounded-2xl border border-niebla bg-white p-6 text-center">
-          <p className="text-sm text-bosque-soft">Verificando identidad…</p>
+          <p className="text-sm text-bosque-soft">Acceso no permitido.</p>
         </div>
       </main>
     </div>
