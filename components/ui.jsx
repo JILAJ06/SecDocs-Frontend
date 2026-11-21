@@ -32,7 +32,7 @@ export function Button({ variant = 'primary', type = 'button', disabled = false,
     <button
       type={type}
       disabled={disabled}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold leading-5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia disabled:cursor-not-allowed disabled:opacity-50 ${look} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold leading-5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia focus-visible:ring-2 focus-visible:ring-bosque disabled:cursor-not-allowed disabled:opacity-50 ${look} ${className}`}
       {...rest}
     >
       {children}

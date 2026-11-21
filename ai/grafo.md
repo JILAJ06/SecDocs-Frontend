@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-19 · Claude Code (nodos de código al terminar T-03)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-19)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -84,19 +84,36 @@ graph LR
 ## Código
 | ID | Ruta | Estado | Relaciones |
 |---|---|---|---|
-| C-ui | `components/ui.jsx` | hecho | `Brand` (grande/chico, `currentColor`), `Button` (primary/secondary/danger), `StatusBadge` (12 estados v1+v2), `Field`, `Select`, `CopyField` (→ usa `Button`), `Alert` (error/warn/ok + info v1); → usa C-tw; lo usan C-header, C-shell, C-authform, V1-dashboard, V1-audit, V1-share |
-| C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; sin estado ni sesión |
-| C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
-| C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`); ya no usa C-api |
-| C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut` y `useSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout y C-authform |
-| C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
-| C-mock | `lib/mock/users.js` | en curso | usuarios de ejemplo, `DEMO_PASSWORD` falsa y contraseñas de cuentas nuevas en memoria → K-mock; lo usa C-services |
-| C-services | `lib/services/auth.js` | en curso | `login`, `register`, `logout` (async, espera simulada 300–500 ms) → usa C-mock; lo usa C-session |
+| C-ui | `components/ui.jsx` | hecho | `Brand` (grande/chico, `currentColor`), `Button` (primary/secondary/danger), `StatusBadge` (12 estados v1+v2), `Field`, `Select`, `CopyField` (→ usa `Button`), `Alert` (error/warn/ok + info v1); → usa C-tw; lo usan C-header, C-shell, C-authform, C-vaultcard, C-vaults, V1-audit, V1-share |
+| C-header | `components/AppHeader.jsx` | hecho | encabezado v2 (pestañas Bóvedas, Compartidas conmigo, Auditoría, Seguridad; props `active`, `email`, `onLogout`) → usa C-ui (`Brand`, `Button`); → navega a S-03, S-13, S-11, S-12; lo usa C-vaults |
+| C-metrica | `components/Metrica.jsx` | hecho | tarjeta de métrica con barra de progreso opcional → usa C-tw; lo usa C-vaults |
+| C-vaultcard | `components/VaultCard.jsx` | hecho | tarjeta de bóveda v2 (Activa, Bloqueada, Expirada) → usa C-ui (`Button`, `StatusBadge`); lo usa C-vaults |
+| C-modal | `components/Modal.jsx` | hecho | modal genérico accesible (`role="dialog"`, Escape, velo, trampa de foco) → usa C-tw; lo usa C-newvaultmodal |
+| C-newvaultmodal | `components/NewVaultModal.jsx` | hecho | modal 03b Nueva bóveda → usa C-modal, C-ui (`Field`, `Select`, `Alert`, `Button`), C-services; lo usa C-vaults |
+| C-vaults | `app/vaults/page.jsx` | hecho | pantalla S-03 Mis bóvedas (+ modal 03b) → usa C-header, C-metrica, C-vaultcard, C-newvaultmodal, C-session, C-services, C-ui |
+| C-card | `components/Card.jsx` | hecho | tarjeta base de columnas de detalle (título, subtítulo, acción) → usa C-tw; lo usa C-vaultdetail |
+| C-filerow | `components/FileRow.jsx` | hecho | fila de archivo (`h-16`, variantes `owner` Destruir y `shared` Descargar) → usa C-ui (`Button`); lo usa C-vaultdetail |
+| C-memberrow | `components/MemberRow.jsx` | hecho | fila de miembro o invitación (`h-11`, confirmación inline) → usa C-ui (`StatusBadge`); lo usa C-vaultdetail |
+| C-vaultdetail | `app/vaults/[id]/page.jsx` | hecho | pantalla S-04 Detalle de bóveda completa (encabezado, archivos, miembros, invitar por correo y llaves) → usa C-header, C-card, C-filerow, C-memberrow, C-modal, C-session, C-services, C-ui |
+| C-invitation | `app/invitacion/[token]/page.jsx` | hecho | pantallas S-05 (iniciar sesión), S-06 (identidad verificada) y S-07 (acceso denegado) → usa C-session, C-services, C-ui, C-header |
+| C-sharedvault | `app/shared/[id]/page.jsx` | hecho | pantallas S-09 (ingresar contraseña con backoff) y S-10 (archivos con descarga simulada y salir de bóveda) → usa C-header, C-filerow, C-session, C-services, C-ui |
+| C-sharedlist | `app/shared/page.jsx` | hecho | pantalla S-13 Compartidas conmigo (lista de bóvedas aceptadas o marcador "Próximamente") → usa C-header, C-session, C-services, C-ui |
+| C-audit | `app/audit/page.jsx` | hecho | pantalla S-11 Auditoría de accesos (reemplaza V1-audit) → usa C-header, C-session, C-services, C-ui |
+| C-sessionrow | `components/SessionRow.jsx` | hecho | fila de sesión (`h-[60px]`, estado Activo/Revocado y acción Revocar) → usa C-ui (`StatusBadge`); lo usa C-security |
+| C-security | `app/security/page.jsx` | hecho | pantalla S-12 Seguridad de la cuenta (sesiones activas, kill-switch y cambio de contraseña) → usa C-header, C-sessionrow, C-modal, C-session, C-services, C-ui |
+| C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
+| C-shell | `components/Shell.jsx` | obsoleto | retirado en T-18 tras eliminar las vistas v1 |
+| C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
+| C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut`, `useSession()` y `useRequireSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout, C-authform, C-vaults, C-vaultdetail y C-invitation |
+| C-api | `lib/api.js` | obsoleto | retirado en T-18 (ninguna vista lo importa) |
+| C-mock | `lib/mock/users.js`, `lib/mock/vaults.js`, `lib/mock/audit.js`, `lib/mock/sessions.js` | hecho | usuarios, bóvedas, archivos, miembros, invitaciones, bitácora y sesiones en memoria → K-mock; lo usa C-services |
+| C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js`, `lib/services/shared.js`, `lib/services/audit.js`, `lib/services/sessions.js` | hecho | servicios de sesión, bóvedas, invitaciones, compartidas, auditoría y seguridad (async, espera simulada 300–500 ms) → usa C-mock; lo usan C-session y las pantallas |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
-| C-css | `app/globals.css` | hecho | clases `.btn-*`, `.input`, `.badge` (v1) |
-| C-docker | `Dockerfile` | hecho | `npm ci`; `docker build` sin verificar (D-07) |
+| C-css | `app/globals.css` | hecho | estilos base de Tailwind y colores de fondo/texto |
+| C-docker | `Dockerfile` | hecho | `npm ci` y compilación multi-stage de Next.js |
+| C-readme | `README.md` | hecho | documentación del frontend v2, credenciales de prueba, rutas y arquitectura `lib/mock` + `lib/services` |
 
 ## Conceptos y externos
 | ID | Nombre | Estado | Notas |
@@ -117,3 +134,19 @@ graph LR
 | 2026-11-19 | Claude Chat | T-03 `en curso` (`01-autenticacion`): S-01, S-02 y K-mock `en curso`; tareas de pantallas renumeradas desde T-04 |
 | 2026-11-19 | Claude Code | T-03: C-authform pasa a v2 (`hecho`); nuevo C-session; C-mock y C-services `en curso` con rutas reales; C-layout envuelve con C-session |
 | 2026-11-20 | Claude Chat | Nuevo `ai/plan-vistas.md` (D-PLAN): tareas T-04 a T-19 `planeado`, Code las ejecuta de corrido sin revisión intermedia |
+| 2026-11-20 | Claude Code | T-04: amplía C-mock (`lib/mock/vaults.js` y `u-3` en `users.js`), C-services (`lib/services/vaults.js`) y C-session (`useRequireSession`) |
+| 2026-11-20 | Claude Code | T-05: nuevos C-metrica, C-vaultcard, C-vaults (`app/vaults/page.jsx`) y C-home (`app/page.jsx`); retira `app/dashboard/page.jsx` |
+| 2026-11-20 | Claude Code | T-06: nuevos C-modal (`components/Modal.jsx`) y C-newvaultmodal (`components/NewVaultModal.jsx`); C-vaults pasa a `hecho` |
+| 2026-11-20 | Claude Code | T-07: nuevos C-card (`components/Card.jsx`) y C-vaultdetail (`app/vaults/[id]/page.jsx`) |
+| 2026-11-20 | Claude Code | T-08: nuevo C-filerow (`components/FileRow.jsx`); C-vaultdetail incorpora la tarjeta Archivos |
+| 2026-11-20 | Claude Code | T-09: nuevo C-memberrow (`components/MemberRow.jsx`); C-vaultdetail incorpora la tabla de miembros e invitaciones |
+| 2026-11-20 | Claude Code | T-10: C-vaultdetail incorpora las tarjetas "Invitar por correo" y "Llaves de esta bóveda" y pasa a `hecho` |
+| 2026-11-20 | Claude Code | T-11: nuevo C-invitation (`app/invitacion/[token]/page.jsx`); amplía C-mock (`audit.js`), C-services (`invitations.js`) y C-authform (`?next=`); retira `app/s/[token]/page.jsx` |
+| 2026-11-20 | Claude Code | T-12: C-invitation incorpora la pantalla S-06 (Identidad verificada con pasos y cuenta regresiva de reenvío) |
+| 2026-11-20 | Claude Code | T-13: C-invitation incorpora la pantalla S-07 (Acceso denegado) y pasa a `hecho` |
+| 2026-11-20 | Claude Code | T-14: nuevo C-sharedvault (`app/shared/[id]/page.jsx`) y amplía C-services (`lib/services/shared.js`) |
+| 2026-11-20 | Claude Code | T-15: C-sharedvault incorpora la vista S-10 de archivos y pasa a `hecho`; nuevo C-sharedlist (`app/shared/page.jsx`) |
+| 2026-11-20 | Claude Code | T-16: nuevo C-audit (`app/audit/page.jsx` v2) y amplía C-services (`lib/services/audit.js`) |
+| 2026-11-20 | Claude Code | T-17: nuevos C-sessionrow (`components/SessionRow.jsx`) y C-security (`app/security/page.jsx`); C-mock y C-services completan `sessions.js` y pasan a `hecho` |
+| 2026-11-20 | Claude Code | T-18: títulos `metadata.title` por ruta, mejoras de accesibilidad/estados vacíos; C-shell y C-api pasan a `obsoleto` |
+| 2026-11-20 | Claude Code | T-19: actualiza `README.md` (C-readme `hecho`), verifica compilación, reglas de seguridad y deja el resumen global en `ai/reporte.md` |
