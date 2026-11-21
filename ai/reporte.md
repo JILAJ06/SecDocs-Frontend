@@ -3,23 +3,25 @@
 > Claude Code: reescribe **todo** este archivo al terminar cada tarea (no lo acumules).
 > Claude Chat lo lee para revisar. No edites `ai/siguiente.md`.
 
-**Tarea:** T-13 · Invitación: acceso denegado
+**Tarea:** T-14 · Bóveda compartida: contraseña
 **Rama:** `02-vistas-v2`
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
 ## Qué hice
-- **`app/invitacion/[token]/page.jsx`:**
-  - Cuando hay sesión y el correo **no** coincide con `inviteEmail`, muestra `AppHeader active="shared"` y la tarjeta de 480 px (`p-6 gap-4 text-center`).
-  - Círculo de 56×56 (`size-14 rounded-full bg-danger-bg text-danger-text`) con ícono de escudo y X de 26 px, título "Acceso denegado" (18/28 semibold, `text-danger-text`) y descripción "Esta invitación es para otra cuenta. Iniciaste sesión como {correo}." sin revelar el correo invitado.
-  - `Alert kind="error"` con el texto exacto y botones en fila (`flex gap-2`, cada uno `flex-1`): secundario "Ir a mis bóvedas" (`/vaults`) y primario "Cambiar de cuenta" (llama a `signOut()`, volviendo a mostrar la pantalla 05 en `/invitacion/[token]`).
-  - Al montar con correo distinto, `acceptInvitation` registra en la bitácora "Acceso denegado: correo no coincide".
+- **`lib/services/shared.js` (nuevo):**
+  - `getSharedVault(id, email)`: verifica membresía `ACCEPTED` (o estado de bloqueo durante la sesión), devuelve metadatos de la bóveda, archivos y estado de desbloqueo en memoria.
+  - `unlockVault(id, email, password)`: valida contra `BOVEDA_DEMO_PASSWORD`. Si falla, aplica espera exponencial de 1, 2, 4 y 8 segundos (intentos 1 a 4, actualizando `TEMP_LOCK` en el miembro y registrando en la bitácora "Contraseña de bóveda incorrecta" con detalle `intento n/5 · espera s s`). Al 5.º intento fallido bloquea al miembro (`LOCKED`) con el mensaje "Acceso bloqueado. Se avisó al dueño de la bóveda." Si acierta, reinicia contadores y registra "Acceso a bóveda concedido".
+  - `downloadSharedFile(id, email, file)` y `leaveVault(id, email)`.
+- **`app/shared/[id]/page.jsx` (nuevo):**
+  - Pantalla 09 (`30:1036`, columna de 448 px, `AppHeader active="shared"`) con cabecera de círculo 56×56 (`size-14 rounded-full bg-success-bg`) e ícono de candado de 26 px, `Field mono type="password"` "Contraseña de la bóveda", `Alert kind="warn"` (o `error` al quinto fallo), botón primario con cuenta regresiva en vivo ("Espera {s} s…", `aria-live="polite"`) y pie 12/16 `text-bosque-muted`.
 
 ## Verificación
-- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 07, nodo `30:964`): columna de 480 px, círculo de 56 px, botones `flex-1`.
+- Medidas verificadas contra `ai/especificacion-vistas.md` (vista 09, nodo `30:1036`): columna de 448 px, círculo de 56 px, campo monoespaciado, esperas 1 / 2 / 4 / 8 s y bloqueo al 5.º intento.
 
 ## Grafo actualizado
-- **Cambiados:** `C-invitation` (`app/invitacion/[token]/page.jsx`) pasa a `hecho`.
+- **Creados:** `C-sharedvault` (`app/shared/[id]/page.jsx`, en curso).
+- **Cambiados:** `C-services` (añade `lib/services/shared.js`).
 
 ## Dudas
 - Ninguna.

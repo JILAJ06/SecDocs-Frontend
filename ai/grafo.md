@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-13)
+**Última actualización:** 2026-11-20 · Claude Code (nodos de código al terminar T-14)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -96,13 +96,14 @@ graph LR
 | C-memberrow | `components/MemberRow.jsx` | hecho | fila de miembro o invitación (`h-11`, confirmación inline) → usa C-ui (`StatusBadge`); lo usa C-vaultdetail |
 | C-vaultdetail | `app/vaults/[id]/page.jsx` | hecho | pantalla S-04 Detalle de bóveda completa (encabezado, archivos, miembros, invitar por correo y llaves) → usa C-header, C-card, C-filerow, C-memberrow, C-modal, C-session, C-services, C-ui |
 | C-invitation | `app/invitacion/[token]/page.jsx` | hecho | pantallas S-05 (iniciar sesión), S-06 (identidad verificada) y S-07 (acceso denegado) → usa C-session, C-services, C-ui, C-header |
+| C-sharedvault | `app/shared/[id]/page.jsx` | en curso | pantalla S-09 Bóveda compartida: ingresar contraseña con backoff exponencial → usa C-header, C-session, C-services, C-ui |
 | C-home | `app/page.jsx` | hecho | redirige `/` a `/vaults` con sesión o a `/login` sin sesión → usa C-session |
 | C-shell | `components/Shell.jsx` | hecho | v1; → usa C-ui |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
 | C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut`, `useSession()` y `useRequireSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout, C-authform, C-vaults, C-vaultdetail y C-invitation |
 | C-api | `lib/api.js` | hecho | cliente axios (CSRF, cookies) |
 | C-mock | `lib/mock/users.js`, `lib/mock/vaults.js`, `lib/mock/audit.js` | en curso | usuarios, bóvedas, archivos, miembros, invitaciones y bitácora de auditoría en memoria → K-mock; lo usa C-services |
-| C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js` | en curso | servicios de sesión, bóvedas e invitaciones (async, espera simulada 300–500 ms) → usa C-mock; lo usan C-session y las pantallas |
+| C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js`, `lib/services/shared.js` | en curso | servicios de sesión, bóvedas, invitaciones y bóveda compartida (async, espera simulada 300–500 ms) → usa C-mock; lo usan C-session y las pantallas |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
@@ -138,3 +139,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-11: nuevo C-invitation (`app/invitacion/[token]/page.jsx`); amplía C-mock (`audit.js`), C-services (`invitations.js`) y C-authform (`?next=`); retira `app/s/[token]/page.jsx` |
 | 2026-11-20 | Claude Code | T-12: C-invitation incorpora la pantalla S-06 (Identidad verificada con pasos y cuenta regresiva de reenvío) |
 | 2026-11-20 | Claude Code | T-13: C-invitation incorpora la pantalla S-07 (Acceso denegado) y pasa a `hecho` |
+| 2026-11-20 | Claude Code | T-14: nuevo C-sharedvault (`app/shared/[id]/page.jsx`) y amplía C-services (`lib/services/shared.js`) |
