@@ -5,6 +5,7 @@
 
 **Tarea:** T-19 · Cierre: Docker, README y verificación final (Resumen global T-03 ajuste → T-19)
 **Rama:** `02-vistas-v2` (creada desde `01-autenticacion` tras el ajuste de T-03)
+**Pull Request:** https://github.com/JILAJ06/SecDocs-Frontend/pull/5 (hacia `develop`; depende de #4)
 **Estado:** Completada
 **Fecha:** 2026-11-20
 
