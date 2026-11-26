@@ -27,6 +27,7 @@ export default function InvitationPage() {
   const [busy, setBusy] = useState(false);
 
   const [cooldown, setCooldown] = useState(0);
+  const [identityStatus, setIdentityStatus] = useState('idle'); // idle | verifying | verified | denied
   const processedSessionKey = useRef('');
 
   useEffect(() => {
@@ -48,16 +49,22 @@ export default function InvitationPage() {
     };
   }, [token]);
 
-  const emailMatches =
-    Boolean(session && invitation) &&
-    session.email.trim().toLowerCase() === invitation.inviteEmail.trim().toLowerCase();
-
   useEffect(() => {
-    if (!session || !invitation) return;
+    if (!session || !invitation) {
+      setIdentityStatus('idle');
+      return;
+    }
     const key = `${token}:${session.email.toLowerCase()}`;
     if (processedSessionKey.current === key) return;
     processedSessionKey.current = key;
-    acceptInvitation(token, session.email).catch(() => {});
+    setIdentityStatus('verifying');
+    acceptInvitation(token, session.email)
+      .then((res) => {
+        setIdentityStatus(res?.accepted ? 'verified' : 'denied');
+      })
+      .catch(() => {
+        setIdentityStatus('denied');
+      });
   }, [session, invitation, token]);
 
   useEffect(() => {
@@ -193,8 +200,21 @@ export default function InvitationPage() {
     );
   }
 
+  if (identityStatus === 'idle' || identityStatus === 'verifying') {
+    return (
+      <div className="min-h-screen bg-niebla">
+        <AppHeader active="shared" email={session.email} onLogout={handleLogout} />
+        <main className="flex min-h-[calc(100vh-60px)] items-center justify-center px-4 py-8">
+          <div className="w-[480px] max-w-full rounded-2xl border border-niebla bg-white p-6 text-center">
+            <p className="text-sm text-bosque-soft">Cargando…</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // Vista 06 · Identidad verificada (el correo de la sesión coincide con la invitación)
-  if (emailMatches) {
+  if (identityStatus === 'verified') {
     return (
       <div className="min-h-screen bg-niebla">
         <AppHeader active="shared" email={session.email} onLogout={handleLogout} />

@@ -1,6 +1,6 @@
 # Grafo de conocimiento · SecDocs-Frontend
 
-**Última actualización:** 2026-11-21 · Claude Code (al terminar T-20)
+**Última actualización:** 2026-11-25 · Claude Code (integración del backend de `main` con las vistas de Figma de `develop`)
 Reglas en `ai/conocimiento/08-grafo-de-conocimiento.md`. Estados: `planeado` · `en curso` · `hecho` · `obsoleto`.
 
 ## Vista general
@@ -98,9 +98,9 @@ graph LR
 | C-shell | `components/Shell.jsx` | obsoleto | retirado en T-18 tras eliminar las vistas v1 |
 | C-authform | `components/AuthForm.jsx` | hecho | v2: pantallas S-01 y S-02 (`mode="login" \| "register"`, soporte `?next=`); → usa C-session, C-services (vía C-session), C-ui (`Brand`, `Field`, `Button`, `Alert`) |
 | C-session | `components/SessionProvider.jsx` | hecho | contexto cliente `session`, `signIn`, `signUp`, `signOut`, `useSession()` y `useRequireSession()`; solo en memoria (sin storage ni cookies); → usa C-services; lo usan C-layout, C-authform, C-vaults, C-vaultdetail y C-invitation |
-| C-api | `lib/api.js` | obsoleto | retirado en T-18 (ninguna vista lo importa) |
-| C-mock | `lib/mock/users.js`, `lib/mock/vaults.js`, `lib/mock/audit.js`, `lib/mock/sessions.js` | hecho | usuarios, bóvedas, archivos, miembros, invitaciones, bitácora y sesiones en memoria → K-mock; lo usa C-services |
-| C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js`, `lib/services/shared.js`, `lib/services/audit.js`, `lib/services/sessions.js` | hecho | servicios de sesión, bóvedas, invitaciones, compartidas, auditoría y seguridad (async, espera simulada 300–500 ms) → usa C-mock; lo usan C-session y las pantallas |
+| C-api | `lib/api.js` | hecho | cliente HTTP centralizado (`fetch` a `/api/v1/*`, cookie `HttpOnly` `secdocs_session`, `credentials: 'include'`); lo usa C-services |
+| C-mock | `lib/mock/users.js`, `lib/mock/vaults.js`, `lib/mock/audit.js`, `lib/mock/sessions.js` | hecho | datos de ejemplo en memoria como respaldo cuando el backend no está levantado → K-mock; lo usa C-services |
+| C-services | `lib/services/auth.js`, `lib/services/vaults.js`, `lib/services/invitations.js`, `lib/services/shared.js`, `lib/services/audit.js`, `lib/services/sessions.js` | hecho | servicios de sesión, bóvedas, invitaciones, compartidas, auditoría y seguridad conectados a C-api (`/api/v1/*`) con respaldo a C-mock; lo usan C-session y las pantallas |
 | C-tw | `tailwind.config.js` | hecho | tokens del Figma (`bosque` + `hover`/`neutral`/`soft`/`muted`, `salvia`, `niebla`, `success`/`danger`/`warning`/`info`); `content` incluye `app`, `components` y `lib` |
 | C-next | `next.config.mjs` | hecho | rewrites `/api`, CSP y cabeceras |
 | C-layout | `app/layout.jsx` | hecho | fuentes Inter y JetBrains Mono; envuelve la app con C-session |
@@ -145,3 +145,4 @@ graph LR
 | 2026-11-20 | Claude Code | T-19: actualiza `README.md` (C-readme `hecho`), verifica compilación, reglas de seguridad y deja el resumen global en `ai/reporte.md` |
 | 2026-11-21 | Claude Chat | PR #5 revisado y mezclado: T-03 y T-04…T-19 `hecho`; T-20 `en curso` (`fix/02-vistas-v2`) |
 | 2026-11-21 | Claude Code | T-20: `generateMockToken` en `lib/services/vaults.js` usa `crypto.getRandomValues` con muestreo por rechazo; T-20 pasa a `hecho` |
+| 2026-11-25 | Claude Code | Integra `origin/main` en `03-integracion-backend`: conecta `C-services` al cliente `C-api` (`/api/v1/*`) manteniendo intactas todas las vistas de Figma y el respaldo `C-mock` |

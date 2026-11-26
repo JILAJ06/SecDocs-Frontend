@@ -7,11 +7,34 @@ import * as auth from '@/lib/services/auth';
 const SessionContext = createContext(null);
 
 /**
- * Sesión simulada de la v2. Vive solo en memoria (useState): recargar la página la pierde.
- * No usa localStorage, sessionStorage ni cookies. Los errores de los servicios se propagan.
+ * Proveedor de sesión v2.
+ * Verifica al montar si existe una sesión activa en la cookie HttpOnly del backend (`/api/v1/auth/me`)
+ * y mantiene el usuario solo en memoria de React (`useState`). Si el backend no está levantado,
+ * permite iniciar sesión con los usuarios de ejemplo en memoria.
  */
 export default function SessionProvider({ children }) {
   const [session, setSession] = useState(null);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    auth
+      .checkSession()
+      .then((user) => {
+        if (active && user) setSession(user);
+      })
+      .finally(() => {
+        if (active) setInitializing(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    auth.onSessionUnauthorized(() => setSession(null));
+    return () => auth.onSessionUnauthorized(null);
+  }, []);
 
   const signIn = useCallback(async (email, password) => {
     const user = await auth.login(email, password);
@@ -30,7 +53,10 @@ export default function SessionProvider({ children }) {
     setSession(null);
   }, []);
 
-  const value = useMemo(() => ({ session, signIn, signUp, signOut }), [session, signIn, signUp, signOut]);
+  const value = useMemo(
+    () => ({ session, initializing, signIn, signUp, signOut }),
+    [session, initializing, signIn, signUp, signOut]
+  );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
@@ -42,15 +68,15 @@ export function useSession() {
 
 /**
  * Guardia de sesión para páginas protegidas.
- * Devuelve la sesión activa o redirige a `/login` si no hay sesión en memoria.
+ * Devuelve la sesión activa o redirige a `/login` una vez verificada la sesión inicial.
  */
 export function useRequireSession() {
-  const { session } = useSession();
+  const { session, initializing } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) router.replace('/login');
-  }, [session, router]);
+    if (!initializing && !session) router.replace('/login');
+  }, [initializing, session, router]);
 
   return session;
 }
