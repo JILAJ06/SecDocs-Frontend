@@ -62,11 +62,11 @@ export default function SharedListPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex lg:flex-wrap lg:gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {items.map((vault) => (
               <article
                 key={vault.id}
-                className="flex w-full flex-col gap-4 rounded-2xl border border-salvia bg-white p-5 lg:w-[368px]"
+                className="flex w-full flex-col gap-4 rounded-2xl border border-salvia bg-white p-5"
               >
                 <div className="flex items-start gap-3">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-niebla text-bosque">

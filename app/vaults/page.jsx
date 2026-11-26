@@ -101,9 +101,9 @@ export default function VaultsPage() {
               </section>
             )}
 
-            <section aria-label="Lista de bóvedas" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex lg:flex-wrap lg:gap-6">
+            <section aria-label="Lista de bóvedas" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {items.length === 0 && (
-                <p className="w-full text-sm text-bosque-soft">Aún no tienes bóvedas activas. Crea la primera.</p>
+                <p className="col-span-full text-sm text-bosque-soft">Aún no tienes bóvedas activas. Crea la primera.</p>
               )}
               {items.map((vault) => (
                 <VaultCard key={vault.id} vault={vault} />
@@ -111,7 +111,7 @@ export default function VaultsPage() {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="flex h-[214px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-salvia bg-transparent transition hover:bg-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia lg:w-[368px]"
+                className="flex h-[214px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-salvia bg-transparent transition hover:bg-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-salvia"
               >
                 <span className="text-[32px] font-bold leading-8 tracking-[-0.5px] text-bosque">+</span>
                 <span className="text-sm font-semibold leading-5 text-bosque">Nueva bóveda</span>
