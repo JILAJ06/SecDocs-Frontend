@@ -31,7 +31,7 @@ export default function VaultCard({ vault }) {
 
   return (
     <article
-      className={`flex w-full flex-col gap-4 rounded-2xl border border-salvia bg-white p-5 lg:w-[368px] ${
+      className={`flex w-full flex-col gap-4 rounded-2xl border border-salvia bg-white p-5 ${
         isExpired ? 'opacity-65' : ''
       }`}
     >
